@@ -463,7 +463,7 @@ chandata *pchandata;
 void Ezca_connectionAddEvent(pchandata)
 chandata *pchandata;
 {
-        ca_puser(pchandata->chid) = pchandata;
+        ca_set_puser(pchandata->chid,pchandata);
         ca_change_connection_event(pchandata->chid,Ezca_connect_change_event);
 }
 

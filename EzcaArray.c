@@ -153,7 +153,7 @@ switch (type)  {
 		pchan = chanlist[i];
 
 		if (pchan->state == cs_conn && pchan->type != TYPENOTCONN) {
-			ca_puser(pchan->chid) = pchan;
+			ca_set_puser(pchan->chid,pchan);
 			pchan->error = 0;
 
 	temp[i] = (char *)(tempbuff+i*offset); 
@@ -257,7 +257,7 @@ switch (type)  {
         for (i=0;i<noName;i++) {
                 pchan = chanlist[i];
 		if (pchan->state == cs_conn && pchan->type != TYPENOTCONN) {
-			ca_puser(pchan->chid) = pchan;
+			ca_set_puser(pchan->chid,pchan);
 			pchan->error = CA_WAIT;
 
 	pchan->pvalue = (char *)(tempbuff+i*offset);
@@ -376,7 +376,7 @@ switch (type)  {
 #endif
  
 	if (pchan->state == cs_conn && pchan->type != TYPENOTCONN) {
-	ca_puser(pchan->chid) = pchan;
+	ca_set_puser(pchan->chid,pchan);
 	pchan->error = 0;
 
 	temp[i] = (char *)value+i*offset; 
@@ -474,7 +474,7 @@ switch (type)  {
 #endif
  
 	if (pchan->state == cs_conn && pchan->type != TYPENOTCONN) {
-	ca_puser(pchan->chid) = pchan;
+	ca_set_puser(pchan->chid,pchan);
 	pchan->error = CA_FAIL;
 
 	temp[i] = (char *)value+i*offset; 
