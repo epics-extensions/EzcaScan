@@ -8,6 +8,7 @@
  * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
  *                        Changed all sizeof() calls to dbr_value_size[]
  *                          to make it work on Alpha and other architectures
+ * .03  07-30-99    bkc   Changed MMDDYY to MONDDYYYY for timestamp
  */
 
 #ifdef _WIN32
@@ -46,7 +47,7 @@ double time;
 
 	if (CA.devprflag > 0) {
 		fprintf(stderr,"tsStampToText:%s",
-			tsStampToText(stamp,TS_TEXT_MMDDYY,nowText));
+			tsStampToText(stamp,TS_TEXT_MONDDYYYY,nowText));
 		fprintf(stderr," IOC time=%.3f sec\n", time);
 		}
 	
