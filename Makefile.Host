@@ -1,7 +1,6 @@
 #	Makefile.Host
 
 TOP = ../../..
-BORLAND_STDC=1
 include $(TOP)/config/CONFIG_EXTENSIONS
 CMPLR = STRICT
 
