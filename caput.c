@@ -38,13 +38,12 @@ int data_array(char *,char **);
 
 extern char *optarg;
 extern int optind;
-int TERSE=0,ENUM_V=1,FORMAT=0,VECTOR=0;
+int TERSE=0,ENUM_V=1,FORMAT=0,VECTOR=0,INITIAL=0;
 
 char *pvName,f_fmt[15],e_fmt[15];
 int noName,req_no=1,rtype,type[1],count[1];
 void *value;
-char *buff,*value2;
-unsigned long offset;
+char *buff;
 
 int main(argc,argv)
 int argc;
@@ -53,7 +52,7 @@ char **argv;
 int c,found,ret,i,j=0,len,first=1;
 char **pv,**dataArray;
 short *sv;
-char *cv;
+dbr_char_t *cv;
 int *iv;
 float *fv;
 double *dv;
@@ -63,7 +62,7 @@ int noName,noData;
 CA.PEND_IOLIST_TIME = 1.;
 
 if (argc < 3) {
-	printf("\nUsage:  caput [-t] [-s] [-w sec] [--] pv_name  pv_value\n\n");
+	printf("\nUsage:  caput [-t] [-s] [-w sec] [-m] [-z] [--] pv_name  pv_value\n\n");
 	printf("This command writes a value or array of values to a channel.\n");
 	printf("It can also write an array of single values to an array of channels.\n\n");
         printf("        -t   Terse mode, only the successfully put value is returned\n");
@@ -71,18 +70,21 @@ if (argc < 3) {
         printf("    -w sec   Wait time, specifies bigger time out, default is 1 second\n");
         printf("  	-m   this option specified the input value string is \n");
 	printf("             a comma separated values for a waveform record \n");
+        printf("  	-z   zero remaining undefined waveform record fields with 0\n");
         printf("   pv_name   requested database process variable name\n");
         printf("             (multiple PV names must be seperated by comma no space)\n");
         printf("   pv_value  new value to put to IOC\n");
         printf("             (multiple PV values must be seperated by comma no space)\n\n");
 	printf("  Examples:    caput  pv_name  pv_value\n");
-	printf("               caput  pv_name1,pv_name2   pv_value1,pv_value2\n");
-	printf("               caput -m  pv_name  v1,v2,v3,...\n\n");
+	printf("               caput  pv_name1,pv_name2   pv_value1,pv_value2\n\n");
+	printf("               caput -m  wf_name  v1,v2,v3,...\n");
+	printf("               caput -z  wf_name  v1,v2,v3,...\n");
+	printf("               caput -z  wf_name  0\n\n");
 
 	exit(1);
 	}
 
-while ((c = getopt(argc-2,argv,"tsmw:")) != -1) 
+while ((c = getopt(argc-2,argv,"tsmzw:")) != -1) 
         switch (c) {
         case 't':
                 TERSE = 1;
@@ -92,6 +94,10 @@ while ((c = getopt(argc-2,argv,"tsmw:")) != -1)
 		break;
         case 'm':
                 VECTOR = 1;
+		break;
+        case 'z':
+                VECTOR = 1;
+		INITIAL = 1;
 		break;
         case 'w':
                 CA.PEND_IOLIST_TIME = atof(optarg);
@@ -189,18 +195,12 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	req_no = argc-first-1;
 	if (req_no > count[0]) req_no = count[0];
 
-	value2 = (char *)calloc(count[0],MAX_STRING_SIZE);
-	value = (void *)value2;
-	ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,value);
-
-	offset = count[0]*dbr_value_size[rtype];
 	buff = (char *)calloc(count[0],MAX_STRING_SIZE);
 	value = (void *)buff;
 
-	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
-
-
 /* get old value */
+
+	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
 
 
 /* put value to device default as string except DBR_ENUM */
@@ -224,24 +224,59 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 
         switch(rtype) {
 	case DBR_ENUM: 
-		sv = (short *)value;
 		if (ENUM_V == 0) {
+		if (INITIAL == 1) {
+			buff = (char *)calloc(count[0],MAX_STRING_SIZE);
+			value = (void *)buff;
+			}
 			for (i=0;i<req_no;i++) {
 				strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
 			}
-			ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
-		} else {
+		if (INITIAL==1)
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,count[0],value);
+		else
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
+		} 
+		else {
+		if (INITIAL == 1) {
+			buff = (char *)calloc(count[0],dbr_value_size[rtype]);
+			sv = (short *)buff;
+			}
 			for (i=0;i<req_no;i++) 
 			sv[i] = atoi(dataArray[i]);
+		if (INITIAL==1)
+			ret = Ezca_putArray(noName,&pvName,rtype,count[0],sv);
+		else
 			ret = Ezca_putArray(noName,&pvName,rtype,req_no,sv);
 		}
 		break;
+
 	default: 
+        /* put double array */
+	if (rtype ==DBR_DOUBLE && count[0] > 1) {
+		buff = (char *)calloc(count[0],DBR_DOUBLE);
+		dv = (double *)buff;
+		if (INITIAL == 1) for (i=0;i<count[0];i++) dv[i] = 0.;
+                for (i=0;i<req_no;i++) dv[i] = atof(dataArray[i]);
+		if (INITIAL==1)
+                     ret = Ezca_putArray(noName,&pvName,rtype,count[0],dv);
+		else
+                     ret = Ezca_putArray(noName,&pvName,rtype,req_no,dv);
+          break;
+	}
 	/* put as string */
+	if (INITIAL == 1) {
+		buff = (char *)calloc(count[0],MAX_STRING_SIZE);
+		for (i=0;i<count[0];i++) strcpy(buff+i*MAX_STRING_SIZE,"0");
+		}
+		
 		for (i=0;i<req_no;i++) {
 			strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
 		}
-		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
+		if (INITIAL==1)
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,count[0],buff);
+		else
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,buff);
 		break;
 	}
 
@@ -249,11 +284,7 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 /*get new value */
 
 	if (ret == 0 ) {
-	value = (void *)value2;
-	ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,value);
-
 	value = (void *)buff;
-
 	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
 
 	if (!TERSE) {
@@ -261,7 +292,6 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	  else printf("New : %-30s ",pvName);
 	}
 	print_caget();
-	free(value2);
 	} 
 
 end_task:
@@ -279,7 +309,7 @@ int print_caget(void)
 int i;
 char **pv;
 short *sv;
-char *cv;
+dbr_char_t *cv;
 int *iv;
 float *fv;
 double *dv;
@@ -294,8 +324,8 @@ double *dv;
 			 	printf("%d ",sv[i]);
 			}
 		     break;
-		case DBR_CHAR:  /* DBR_UCHAR */
-			cv = (char *)value;
+		case DBR_CHAR: /* DBR_UCHAR */ 
+			cv = (dbr_char_t *)value;
 			for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,(float)cv[i]);
 			else if (FORMAT==2) printf(e_fmt,(float)cv[i]);
@@ -314,8 +344,8 @@ double *dv;
 				}
 			} else {
 			if (ENUM_V == 1) printf("%d ",sv[0]);
-			else if (strlen(value2) > 0 ) 
-				printf("%s ",value2);
+			else if (strlen(value) > 0 ) 
+				printf("%s ",value);
 			else	printf("%d ",sv[0]);
 			}
 		     break;
