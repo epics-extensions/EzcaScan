@@ -6,8 +6,8 @@
  *                              or double values.
  * .02  05-18-99        bkc     Fix -s option with ENUM type PV
  * .03  07-28-99        bkc     Fix -t option output
- *                              Add -- on command help for negative value 
  * .04  08-24-99        bkc     Check ret value for putArray
+ * .05  08-27-99        bkc     Don't treat the pvname and value as input option
  */
 
 #ifdef _WIN32
@@ -70,20 +70,18 @@ if (argc < 3) {
         printf("    -w sec   Wait time, specifies bigger time out, default is 1 second\n");
         printf("  	-m   this option specified the input value string is \n");
 	printf("             a comma separated values for a waveform record \n");
-        printf("  	--   special option to delimit the end of the options \n");
         printf("   pv_name   requested database process variable name\n");
-        printf("             (array of PV names must be seperated by comma only\n");
+        printf("             (multiple PV names must be seperated by comma no space)\n");
         printf("   pv_value  new value to put to IOC\n");
-        printf("             (array of PV values must be seperated by comma only\n\n");
+        printf("             (multiple PV values must be seperated by comma no space)\n\n");
 	printf("  Examples:    caput  pv_name  pv_value\n");
-	printf("               caput  --  pv_name  -1000.\n");
 	printf("               caput  pv_name1,pv_name2   pv_value1,pv_value2\n");
 	printf("               caput -m  pv_name  v1,v2,v3,...\n\n");
 
 	exit(1);
 	}
 
-while ((c = getopt(argc,argv,"tsmw:")) != -1) 
+while ((c = getopt(argc-2,argv,"tsmw:")) != -1) 
         switch (c) {
         case 't':
                 TERSE = 1;
@@ -100,12 +98,12 @@ while ((c = getopt(argc,argv,"tsmw:")) != -1)
                 break;
         }
 
-/*
+
 if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	printf(" %s is an invalid channel name\n", argv[optind]);
 	return(1);     
 	}
-*/
+
 	first = optind;
 
 	ca_task_initialize();
@@ -223,60 +221,29 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	}
 
         switch(rtype) {
-	case DBR_INT: 
-		sv = (short *)value;
-		for (i=0;i<req_no;i++) 
-			sv[i] = atoi(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,sv);
-		break;
-	case DBR_CHAR: 
-		cv = (char *)value;
-		for (i=0;i<req_no;i++) 
-			cv[i] = atoi(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,cv);
-		break;
 	case DBR_ENUM: 
 		sv = (short *)value;
 		if (ENUM_V == 0) {
 			for (i=0;i<req_no;i++) {
 				strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
 			}
-			value=(char *)buff;
 			ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
 		} else {
-		for (i=0;i<req_no;i++) 
+			for (i=0;i<req_no;i++) 
 			sv[i] = atoi(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,sv);
+			ret = Ezca_putArray(noName,&pvName,rtype,req_no,sv);
 		}
 		break;
-	case DBR_FLOAT: 
-		fv = (float *)value;
-		for (i=0;i<req_no;i++) 
-			fv[i] = (float)atof(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,fv);
-		break;
-	case DBR_DOUBLE: 
-		dv = (double *)value;
-		for (i=0;i<req_no;i++) 
-			dv[i] = atof(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,dv);
-		break;
-	case DBR_STRING: 
+	default: 
+	/* put as string */
 		for (i=0;i<req_no;i++) {
 			strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
 		}
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,value);
-		break;
-	default:
-	case DBR_LONG: 
-		iv = (int *)value;
-		for (i=0;i<req_no;i++) 
-			iv[i] = atoi(dataArray[i]);
-		ret = Ezca_putArray(noName,&pvName,rtype,req_no,iv);
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
 		break;
 	}
 
-
+		
 /*get new value */
 
 	if (ret == 0 ) {
