@@ -204,10 +204,11 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 		dataArray[i] = argv[i+first+1];
 	}
 
-	if (!TERSE)
+	if (!TERSE) {
 	if (req_no > 1) printf("Old : %s %d ",pvName,req_no);
 		else printf("Old : %-30s ",pvName);
 	print_caget();
+	}
 
         switch(rtype) {
 	case DBR_INT: 
@@ -291,7 +292,7 @@ end_task:
 
 int print_caget(void)
 {
-int i,ret;
+int i;
 char **pv;
 short *sv;
 char *cv;
