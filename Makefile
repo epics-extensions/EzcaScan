@@ -25,6 +25,8 @@ LIBRARY := EzcaScan
 EzcaScan_SRCS = EzcaFunc.c EzcaHash.c EzcaArray.c EzcaUtil.c \
                 EzcaMonitor.c  EzcaScan.c EzcaQueue.c
 
+EzcaFunc_CPPFLAGS += -DBASE_3_14
+
 EzcaScan_LIBS += ezca ca Com
 PROD_LIBS += EzcaScan ezca ca Com
 
