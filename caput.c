@@ -8,7 +8,9 @@
  * .03  07-28-99        bkc     Fix -t option output
  * .04  08-24-99        bkc     Check ret value for putArray
  * .05  08-27-99        bkc     Don't treat the pvname and value as input option
- * .02  01-20-00        bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
+ * .06  01-20-00        bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
+ * .07  06-20-02        bkc     Remove check for pvname length, so it will 
+ *                              accept multiple pvnames with length exceeds 40 
  */
 
 #ifdef _WIN32
@@ -98,11 +100,12 @@ while ((c = getopt(argc-2,argv,"tsmw:")) != -1)
                 break;
         }
 
-
+/*
 if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	printf(" %s is an invalid channel name\n", argv[optind]);
 	return(1);     
 	}
+*/
 
 	first = optind;
 
