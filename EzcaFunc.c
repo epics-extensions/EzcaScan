@@ -10,6 +10,8 @@
  *                       sleep for WIN32
  * .02  10-05-98 bkc     Cleanup the unreferenced local variable and add 
  *                       function prototype to get rid of make warning message 
+ * .04  11-28-01 mlr     Test if PV names are zero length and treat same as if
+ *                       null pointers.
  */
 
 #ifdef _WIN32
@@ -75,7 +77,8 @@ int status,command_error;
 
 /* populate hash table here return the address */
 
-	if (name) pchandata = (chandata *)Ezca_check_hash_table(name);
+	if (name && (strlen(name) > 0)) 
+             pchandata = (chandata *)Ezca_check_hash_table(name);
 	else pchandata = (chandata *)Ezca_check_hash_table(" ");
 
   if (pchandata->type != TYPENOTCONN) return (CA_SUCCESS);
@@ -140,7 +143,7 @@ chandata *pnow,*phead,*pchan;
 	phead = (chandata *)list;
 	pnow = phead;
 	for (i=0;i<noName;i++) {
-	if (pvName[i])
+	if (pvName[i] && (strlen(pvName[i]) > 0))
 		pchan = (chandata *)Ezca_check_hash_table(pvName[i]);
 	else pchan=(chandata *)Ezca_check_hash_table(" ");
 
