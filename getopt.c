@@ -73,6 +73,10 @@
 #include <unistd.h>
 #endif	/* GNU C library.  */
 
+#if defined(_WIN32) || defined(LINUX) || defined(SOLARIS)
+#include <stdlib.h>
+#endif
+
 #ifdef VMS
 #include <unixlib.h>
 #if HAVE_STRING_H - 0
@@ -193,7 +197,7 @@ static enum
 /* Value of POSIXLY_CORRECT environment variable.  */
 static char *posixly_correct;
 
-#ifdef	__GNU_LIBRARY__
+#if defined(__GNU_LIBRARY__) || defined(_WIN32) || defined(SOLARIS) || defined(LINUX)
 /* We want to avoid inclusion of string.h with non-GNU libraries
    because there are many ways it can cause trouble.
    On some systems, it contains special magic macros that don't work
@@ -205,7 +209,9 @@ static char *posixly_correct;
 /* Avoid depending on library functions or files
    whose names are inconsistent.  */
 
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 char *getenv ();
+#endif
 
 static char *
 my_index (str, chr)
@@ -293,7 +299,7 @@ text_set_element (__libc_subinit, store_args_and_env);
    `first_nonopt' and `last_nonopt' are relocated so that they describe
    the new indices of the non-options in ARGV after they are moved.  */
 
-#if defined (__STDC__) && __STDC__
+#if (defined (__STDC__) && __STDC__) || defined(_WIN32)
 static void exchange (char **);
 #endif
 
@@ -379,7 +385,7 @@ exchange (argv)
 
 /* Initialize the internal data when the first call is made.  */
 
-#if defined (__STDC__) && __STDC__
+#if (defined (__STDC__) && __STDC__) || defined(_WIN32)
 static const char *_getopt_initialize (int, char *const *, const char *);
 #endif
 static const char *
@@ -503,7 +509,6 @@ _getopt_initialize (argc, argv, optstring)
 
    If LONG_ONLY is nonzero, '-' as well as '--' can introduce
    long-named options.  */
-
 int
 _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
      int argc;

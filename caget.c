@@ -27,7 +27,9 @@
 
 extern chandata **chanlist,*pchandata;
 
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 extern double atof();
+#endif
 int getopt(int,char **,const char *);
 int no_elements(char *);
 int data_array(char *,char **);

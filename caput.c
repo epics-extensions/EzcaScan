@@ -27,10 +27,12 @@
 
 #define DB_TEXT_GLBLSOURCE
 #include "EzcaScan.h"
-
+#include "getopt.h"
 extern chandata **chanlist,*pchandata;
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 extern double atof();
 int getopt();
+#endif
 int print_caget(void);
 int no_elements(char *);
 int data_array(char *,char **);
@@ -45,7 +47,7 @@ void *value;
 char *buff,*value2;
 unsigned long offset;
 
-main(argc,argv)
+int main(argc,argv)
 int argc;
 char **argv;
 {
@@ -254,9 +256,10 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 
 	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
 
-	if (!TERSE)
-	if (req_no > 1) printf("New : %s %d ",pvName,req_no);
-		else printf("New : %-30s ",pvName);
+	if (!TERSE) {
+	  if (req_no > 1) printf("New : %s %d ",pvName,req_no);
+	  else printf("New : %-30s ",pvName);
+	}
 	print_caget();
 	free(value2);
 	} 

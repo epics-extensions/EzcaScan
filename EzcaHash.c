@@ -44,11 +44,17 @@ item  *table[TABSIZE];
 int num; 	/* no of occupied slots in table */
 int succlen;	/* total length of all successful searches */
 
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 static int hash7();
 static chandata *AllocChandata();
 static int pv_search();
+#else
+static int hash7(char *s);
+static chandata *AllocChandata(void);
+static int pv_search(char *s);
+#endif
 
-static T[256] = {
+static int T[256] = {
  39,159,180,252, 71,  6, 13,164,232, 35,226,155, 98,120,154, 69,
 157, 24,137, 29,147, 78,121, 85,112,  8,248,130, 55,117,190,160,
 176,131,228, 64,211,106, 38, 27,140, 30, 88,210,227,104, 84, 77,
@@ -67,7 +73,7 @@ static T[256] = {
 134, 68, 93,183,241, 81,196, 49,192, 65,212, 94,203, 10,200, 47
 };
 
-static TT[256] = {
+static int TT[256] = {
   1, 87, 49, 12,176,178,102,166,121,193,  6, 84,249,230, 44,163,
  14,197,213,181,161, 85,218, 80, 64,239, 24,226,236,142, 38,200,
 110,177,104,103,141,253,255, 50, 77,101, 81, 18, 45, 96, 31,222,

@@ -33,9 +33,9 @@
 #include "EzcaScan.h"
 
 extern chandata **chanlist;
-
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 extern double atof();
-
+#endif
 /******************************************************
   add a monitor list
 ******************************************************/
