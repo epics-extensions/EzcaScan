@@ -8,6 +8,7 @@
  * .02  mm-dd-yy        iii     Comment
  * .02  09-02-98        MLR     Added includes for WIN32, renamed from Ezca.h
  *                              to EzcaScan.h to avoid conflicts on WIN32
+ * .03  09-26-01        MLR     Removed definition of NULL
  */
 
 #ifdef _WIN32
@@ -28,7 +29,6 @@
 	#define TRUE 1
 #endif
 
-#define NULL            0
 #define NAME_LENGTH	PVNAME_SZ+FLDNAME_SZ+2
 #define CA_SUCCESS 0
 #define CA_FAIL   -1

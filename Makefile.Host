@@ -26,10 +26,10 @@ LIBRARY := EzcaScan
 #       need additional libs to build
 PROD_LIBS += ezca ca Com
 
-caget_LIBS += ezcaScan 
-caput_LIBS += ezcaScan 
+caget_LIBS += EzcaScan 
+caput_LIBS += EzcaScan 
 ezca_DIR=$(INSTALL_LIB)
-ezcaScan_DIR=.
+EzcaScan_DIR=.
 
 USR_CFLAGS = -DACCESS_SECURITY
 
