@@ -1,7 +1,10 @@
 /*
  * Modification Log:
  * -----------------
- * .06  mm-dd-yy        iii     Comment
+ * .01  02-05-1999      bkc     This is created to replace the old ca/caget.c
+ *                              The default %g format is used for native float
+ *                              or double values.
+ * .02  mm-dd-yy        iii     Comment
  */
 
 #ifdef _WIN32
@@ -23,7 +26,7 @@
 #include "EzcaScan.h"
 
 extern chandata **chanlist,*pchandata;
-/* extern struct caGlobals CA; */
+
 extern double atof();
 int getopt(int,char **,const char *);
 int no_elements(char *);
@@ -200,7 +203,7 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 			for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,fv[i]);
 			else if (FORMAT==2) printf(e_fmt,fv[i]);
-			else 	printf("%f ",fv[i]);
+			else 	printf("%g ",fv[i]);
 			}
 		     break;
 		case DBR_DOUBLE:
@@ -208,7 +211,7 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 			for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,dv[i]);
 			else if (FORMAT==2) printf(e_fmt,dv[i]);
-			else 	printf("%f ",dv[i]);
+			else 	printf("%g ",dv[i]);
 			}
 		     break;
 		case DBR_STRING:

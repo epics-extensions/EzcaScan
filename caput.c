@@ -1,7 +1,9 @@
 /*
  * Modification Log:
  * -----------------
- * .01  02-11-99        bkc     Replace old caput by this new version
+ * .01  02-11-99        bkc     Replace old ca/caput.c by this new version
+ *                              The default %g format is used for native float
+ *                              or double values.
  * .02  mm-dd-yy        iii     Comment
  */
 
@@ -329,7 +331,7 @@ double *dv;
 			for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,fv[i]);
 			else if (FORMAT==2) printf(e_fmt,fv[i]);
-			else 	printf("%f ",fv[i]);
+			else 	printf("%g ",fv[i]);
 			}
 		     break;
 		case DBR_DOUBLE:
@@ -337,7 +339,7 @@ double *dv;
 			for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,dv[i]);
 			else if (FORMAT==2) printf(e_fmt,dv[i]);
-			else 	printf("%f ",dv[i]);
+			else 	printf("%g ",dv[i]);
 			}
 		     break;
 		case DBR_STRING:
