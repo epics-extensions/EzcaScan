@@ -60,19 +60,19 @@ int first=1;
 	CA.PEND_IO_TIME = 1.0;
 if (argc < 2) {
 	printf("\nUsage:  caget [-n] [-t] [-f n] [-e n] [-w sec] pv_name\n\n");
-	printf("The only required input is the pv_name.\n");
-	printf("caget calls channel access functions to return IOC string or numerical value\n");
-	printf("to standard output for a requested process variable.\n\n");
-	printf("        -n   returns numerical value instead of string for DBR_ENUM field\n\n");
-	printf("	-t   Terse mode, process variable name not returned\n\n");
-	printf("      -f n   Use f format, n specifies number of digits after the decimal point\n\n");
-	printf("      -e n   Use e format, n specifies number of digits after the decimal point\n\n");
-	printf("    -w sec   Wait time, specifies bigger time out, default is 1.0 second\n\n");
+	printf("This command read a value or array of values from one or more IOC channels.\n\n");
+	printf("        -n   returns numerical value instead of string for DBR_ENUM field\n");
+	printf("	-t   Terse mode, process variable name not returned\n");
+	printf("      -f n   Use f format, n specifies number of digits after the decimal point\n");
+	printf("      -e n   Use e format, n specifies number of digits after the decimal point\n");
+	printf("    -w sec   Wait time, specifies bigger time out, default is 1.0 second\n");
 	printf("     -# no   The number 'no' specifies the number of values to be returned for\n");
 	printf("             an array record. If this option is not used then the whole array\n");
 	printf("             is returned. The first returned number is the size of the array ,\n");
-	printf("             then it is followed with the array of values obtained.\n\n");
-	printf("   pv_name   requested database process variable name(s)\n\n");
+	printf("             then it is followed with the array of values obtained.\n");
+	printf("   pv_name   a single or a list of PV names from IOC\n\n");
+	printf("   Examples:   caget  pv_name\n");
+	printf("               caget  pv_name1 pv_name2 pv_name3\n\n");
 	return(1); /*exit(1); */
 	}
 

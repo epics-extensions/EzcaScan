@@ -60,14 +60,20 @@ CA.PEND_IO_TIME = 1.;
 
 if (argc < 3) {
 	printf("\nUsage:  caput [-t] [-s] [-w sec] pv_name  pv_value\n\n");
-        printf("        -t   Terse mode, only the successfully put value is returned\n\n");
-	printf("        -s   pv_value entered as database defined enumeral string\n\n");
-        printf("    -w sec   Wait time, specifies bigger time out, default is 1 second\n\n");
-        printf("  	-m   if this option specified the waveform values entered \n");
-	printf("             must be a single string of multiple values been comma\n");
-	printf("             separated and no blank space is allowed \n\n");
-        printf("   pv_name   requested database process variable name\n\n");
-        printf("  pv_value   new value to put to IOC\n\n");
+	printf("This command writes a value or array of values to a channel.\n");
+	printf("It can also write an array of single values to an array of channels.\n\n");
+        printf("        -t   Terse mode, only the successfully put value is returned\n");
+	printf("        -s   pv_value entered as database defined enumeral string\n");
+        printf("    -w sec   Wait time, specifies bigger time out, default is 1 second\n");
+        printf("  	-m   this option specified the input value string is \n");
+	printf("             a comma separated values for a waveform record \n");
+        printf("   pv_name   requested database process variable name\n");
+        printf("             (array of PV names must be seperated by comma only\n");
+        printf("   pv_value  new value to put to IOC\n");
+        printf("             (array of PV values must be seperated by comma only\n\n");
+	printf("  Examples:    caput  pv_name  pv_value\n");
+	printf("               caput  pv_name1,pv_name2   pv_value1,pv_value2\n");
+	printf("               caput -m  pv_name  v1,v2,v3,...\n\n");
 
 	exit(1);
 	}
