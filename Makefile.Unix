@@ -3,8 +3,11 @@
 #
 #
 # $Log$
-# Revision 1.1  1999/01/13 17:54:25  cha
-# Initial revision
+# Revision 1.2  1999/01/19 21:52:25  jba
+# Changed Ezca to EzcaScan.
+#
+# Revision 1.1.1.1  1999/01/13 17:54:25  cha
+# Import sources for EzcaScan
 #
 # Revision 1.1.1.1  1996/02/26 20:43:30  cha
 # Create Ezca directory
@@ -17,7 +20,7 @@ include Target.include
 include $(EPICS)/config/CONFIG_EXTENSIONS
 
 DEPLIBS = \
-           $(EPICS_EXTENSIONS_LIB)/libEzca.a \
+           $(EPICS_EXTENSIONS_LIB)/libEzcaScan.a \
 	   $(EPICS_EXTENSIONS_LIB)/libezca.a \
 	   $(EPICS_BASE_LIB)/libca.a \
            $(EPICS_BASE_LIB)/libCom.a 
@@ -28,7 +31,7 @@ USR_INCLUDES = -I$(INSTALL_INCLUDE) -I$(EPICS_EXTENSIONS_INCLUDE)
 #USR_CFLAGS = -DACCESS_SECURITY -DEZCA
 USR_CFLAGS = -DACCESS_SECURITY 
 USR_LDFLAGS = -L$(EPICS_EXTENSIONS_LIB) 
-#USR_LDLIBS = -lEzca -lezca -lca -lCom -lm
+#USR_LDLIBS = -lEzcaScan -lezca -lca -lCom -lm
 USR_LDLIBS = -lca -lCom -lm
 
 SRCS.c = \
@@ -39,9 +42,9 @@ LIBOBJS = \
 	EzcaHash.o EzcaFunc.o EzcaArray.o  EzcaUtil.o \
 	EzcaMonitor.o  EzcaScan.o EzcaQueue.o
 
-LIBNAME = libEzca.a
+LIBNAME = libEzcaScan.a
 
-INC = Ezca.h
+INC = EzcaScan.h
 
 include $(EPICS)/config/RULES.Unix
 
