@@ -38,7 +38,9 @@
 
 extern chandata **chanlist;
 
+#if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 extern double atof();
+#endif
 
 /****************************************************
  *  get native DB field type and count for the given array 
@@ -290,7 +292,7 @@ switch (type)  {
                         while (pchan->error == CA_WAIT) {
                                 ii++;
                                 if (ii > imax) {
-                	fprintf(stderr,"Ezca_getArrayEvent timeout on:",
+                	fprintf(stderr,"Ezca_getArrayEvent timeout on : %s\n",
 				ca_name(pchan->chid));
 				command_error = CA_FAIL;
 					break;
@@ -509,7 +511,7 @@ temparg.pchan = pchan;
                         while (pchan->error != CA_SUCCESS) {
                                 ii++;
                                 if (ii > imax) {
-                        fprintf(stderr,"ca_array_put_callback timeout on:",
+                        fprintf(stderr,"ca_array_put_callback timeout on : %s\n",
                                 ca_name(pchan->chid));
 				command_error = CA_FAIL;
                                         break;
