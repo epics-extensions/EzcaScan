@@ -11,6 +11,7 @@
  * .01  06-14-96  bkc     Use the chanlist instead of next pointer to access
  *                        the list array
  * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
+ * .03  04-07-99    BKC   DBR_ENUM is monitored as real value instead of string
  */
 
 #ifdef _WIN32
@@ -57,8 +58,8 @@ if (chanlist != NULL) {
                         command_error = CA_FAIL;
 		else  if (pchan->evid == NULL) {
 
-	if (ca_field_type(pchan->chid) == DBR_STRING ||
-		ca_field_type(pchan->chid) == DBR_ENUM )
+
+	if (ca_field_type(pchan->chid) == DBR_STRING) 
        	 	status = ca_add_masked_array_event(DBR_TIME_STRING,0,
                 	pchan->chid,
 			Ezca_monitorStringChangeEvent,
@@ -68,6 +69,7 @@ if (chanlist != NULL) {
        		        DBE_VALUE | DBE_ALARM);
 	
 	else
+
        		status = ca_add_masked_array_event(DBR_TIME_DOUBLE,0,
                 	pchan->chid,
 			Ezca_monitorValueChangeEvent,
@@ -75,7 +77,6 @@ if (chanlist != NULL) {
        	        	(float)0,(float)0,(float)0,
        	        	&(pchan->evid),
                 	DBE_VALUE | DBE_ALARM);
-
 			pchan->error = status;
 
 			/* automatically add a change connection event */
@@ -140,6 +141,7 @@ if (chanlist != NULL) {
 }
 
 
+
 /******************************************************
   value change event callback 
 ******************************************************/
@@ -172,8 +174,8 @@ double time;
 		pchandata->value, pchandata->status,
 		pchandata->severity,pchandata->event);
 		
-
 	}
+
 #ifdef ACCESS_SECURITY
 	}
 	else 
@@ -306,6 +308,20 @@ if (chanlist != NULL) {
                 if (pchan->state != cs_conn) 
                         command_error = CA_FAIL;
 		else  if (pchan->evid ) {
+
+	if (ca_field_type(pchan->chid) == DBR_STRING)
+	{
+			if (CA.devprflag > 0) 
+				fprintf(stderr,"Ezca_monitorArrayGet: name=%s, value=%s, status=%d, event=%d\n",
+				ca_name(pchan->chid),pchan->string,
+				pchan->status,pchan->event);
+				pchan->value = atof(pchan->string);
+			 *(vals+i) = pchan->value; 
+			if (pchan->event)
+				 pchan->event = 0;  /* reset after read*/
+
+	} else {
+
 			if (CA.devprflag > 0) 
 				fprintf(stderr,"Ezca_monitorArrayGet: name=%s, value=%f, status=%d, event=%d\n",
 				ca_name(pchan->chid),pchan->value,
@@ -314,6 +330,7 @@ if (chanlist != NULL) {
 			 *(vals+i) = pchan->value; 
 			if (pchan->event)
 				 pchan->event = 0;  /* reset after read*/
+	}
 			}
 		else  {
 		if (CA.devprflag >= 0)
@@ -402,7 +419,7 @@ chandata *pchandata;
         strcpy(pchandata->string, ((struct dbr_sts_string *)args.dbr)->value);
         pchandata->status= ((struct dbr_sts_string *)args.dbr)->status;
         pchandata->severity = ((struct dbr_sts_string *)args.dbr)->severity;
-	pchandata->value = atof(pchandata->string);
+	/*pchandata->value = atof(pchandata->string);*/
         pchandata->error= 0;
 
         if (CA.devprflag > 1)
