@@ -8,6 +8,7 @@
  * .03  07-28-99        bkc     Fix -t option output
  * .04  08-24-99        bkc     Check ret value for putArray
  * .05  08-27-99        bkc     Don't treat the pvname and value as input option
+ * .02  01-20-00        bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
  */
 
 #ifdef _WIN32
@@ -25,7 +26,6 @@
 
 #include <shareLib.h>
 
-#define DB_TEXT_GLBLSOURCE
 #include "EzcaScan.h"
 #include "getopt.h"
 extern chandata **chanlist,*pchandata;

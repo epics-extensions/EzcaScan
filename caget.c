@@ -4,7 +4,7 @@
  * .01  02-05-1999      bkc     This is created to replace the old ca/caget.c
  *                              The default %g format is used for native float
  *                              or double values.
- * .02  mm-dd-yy        iii     Comment
+ * .02  01-20-2000      bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
  */
 
 #ifdef _WIN32
@@ -22,7 +22,6 @@
 
 #include <shareLib.h>
 
-#define DB_TEXT_GLBLSOURCE
 #include "EzcaScan.h"
 
 extern chandata **chanlist,*pchandata;
@@ -124,8 +123,6 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 		}
 	}
 
-/* for (j=0;j<Nums;j++) printf("%d %s\n",j,Names[j]);
- */
 
 	for (j=0;j<Nums;j++) {
 	req_no = sp_no;
