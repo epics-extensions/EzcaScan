@@ -203,7 +203,7 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
 
 
-/* put value to device default as string except DBR_ENUM */
+/* put value as default except -s for DBR_ENUM */
 
 	dataArray = (char **)calloc(count[0],sizeof(char *));
 	if (VECTOR==1) {
@@ -226,57 +226,65 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	case DBR_ENUM: 
 		if (ENUM_V == 0) {
 		if (INITIAL == 1) {
-			buff = (char *)calloc(count[0],MAX_STRING_SIZE);
-			value = (void *)buff;
-			}
-			for (i=0;i<req_no;i++) {
-				strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
-			}
-		if (INITIAL==1)
-		ret = Ezca_putArray(noName,&pvName,DBR_STRING,count[0],value);
-		else
-		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
+			for (i=0;i<count[0];i++) 
+			strcpy(buff+i*MAX_STRING_SIZE," ");;
+		}
+		for (i=0;i<req_no;i++) 
+		strcpy(buff+i*MAX_STRING_SIZE, dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,DBR_STRING,count[0],buff);
+		break;
 		} 
 		else {
-		if (INITIAL == 1) {
-			buff = (char *)calloc(count[0],dbr_value_size[rtype]);
-			sv = (short *)buff;
-			}
-			for (i=0;i<req_no;i++) 
-			sv[i] = atoi(dataArray[i]);
-		if (INITIAL==1)
+			sv = (short *)value;
+			if (INITIAL == 1)  for (i=0;i<count[0];i++) sv[i]=0;
+			for (i=0;i<req_no;i++) sv[i] = atoi(dataArray[i]);
 			ret = Ezca_putArray(noName,&pvName,rtype,count[0],sv);
-		else
-			ret = Ezca_putArray(noName,&pvName,rtype,req_no,sv);
 		}
 		break;
 
-	default: 
-        /* put double array */
-	if (rtype ==DBR_DOUBLE && count[0] > 1) {
-		buff = (char *)calloc(count[0],DBR_DOUBLE);
+	case DBR_CHAR: /* put char array */
+		cv = (dbr_char_t *)value;
+		if (INITIAL == 1) for (i=0;i<count[0];i++) cv[i] = 0;
+		for (i=0;i<req_no;i++)  cv[i] = atoi(dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,rtype,count[0],cv);
+		break;
+	
+	case DBR_INT: /* put short/int array */
+		sv = (short *)value;
+		if (INITIAL == 1) for (i=0;i<count[0];i++) sv[i] = 0;
+                for (i=0;i<req_no;i++)  sv[i] = atoi(dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,rtype,count[0],sv);
+		break;
+	
+	case DBR_LONG: /* put long array */
+		iv = (int *)value;
+		if (INITIAL == 1) for (i=0;i<count[0];i++) iv[i] = 0;
+                for (i=0;i<req_no;i++)  iv[i] = atoi(dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,rtype,count[0],iv);
+		break;
+	
+	case DBR_FLOAT: /* put float array */
+		fv = (float *)buff;
+		if (INITIAL == 1) for (i=0;i<count[0];i++) fv[i] = 0.;
+                for (i=0;i<req_no;i++)  fv[i] = atof(dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,rtype,count[0],fv);
+		break;
+	
+	case DBR_DOUBLE: /* put double array */
 		dv = (double *)buff;
 		if (INITIAL == 1) for (i=0;i<count[0];i++) dv[i] = 0.;
-                for (i=0;i<req_no;i++) dv[i] = atof(dataArray[i]);
-		if (INITIAL==1)
-                     ret = Ezca_putArray(noName,&pvName,rtype,count[0],dv);
-		else
-                     ret = Ezca_putArray(noName,&pvName,rtype,req_no,dv);
-          break;
-	}
-	/* put as string */
-	if (INITIAL == 1) {
-		buff = (char *)calloc(count[0],MAX_STRING_SIZE);
-		for (i=0;i<count[0];i++) strcpy(buff+i*MAX_STRING_SIZE,"0");
+                for (i=0;i<req_no;i++)  dv[i] = atof(dataArray[i]);
+		ret = Ezca_putArray(noName,&pvName,rtype,count[0],dv);
+		break;
+
+	default: /* put as string */
+		if (INITIAL == 1) {
+			for (i=0;i<count[0];i++) 
+			strcpy(buff+i*MAX_STRING_SIZE," ");;
 		}
-		
-		for (i=0;i<req_no;i++) {
-			strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
-		}
-		if (INITIAL==1)
+		for (i=0;i<req_no;i++) 
+		strcpy(buff+i*MAX_STRING_SIZE, dataArray[i]);
 		ret = Ezca_putArray(noName,&pvName,DBR_STRING,count[0],buff);
-		else
-		ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,buff);
 		break;
 	}
 
