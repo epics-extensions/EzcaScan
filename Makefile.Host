@@ -31,11 +31,6 @@ caput_LIBS += ezcaScan
 ezca_DIR=$(INSTALL_LIB)
 ezcaScan_DIR=.
 
-ifdef BASE_3_14
-PROD_LIBS += ts
-ts_DIR = $(EPICS_EXTENSIONS_LIB)
-endif
-
 USR_CFLAGS = -DACCESS_SECURITY
 
 caget_SRCS = caget.c getopt.c
