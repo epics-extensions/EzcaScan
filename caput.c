@@ -4,7 +4,7 @@
  * .01  02-11-99        bkc     Replace old ca/caput.c by this new version
  *                              The default %g format is used for native float
  *                              or double values.
- * .02  mm-dd-yy        iii     Comment
+ * .02  05-18-99        bkc     Fix -s option with ENUM type PV
  */
 
 #ifdef _WIN32
@@ -39,7 +39,7 @@ int TERSE=0,ENUM_V=1,FORMAT=0,VECTOR=0;
 char *pvName,f_fmt[15],e_fmt[15];
 int noName,req_no=1,rtype,type[1],count[1];
 void *value;
-char *buff,*string_value;
+char *buff,*value2;
 unsigned long offset;
 
 main(argc,argv)
@@ -156,6 +156,8 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	for (i=0;i<req_no;i++) printf("New : %-30s %s\n",pvNames[i],pv[i]);
 
 	free(pv);
+	free(tempValue);
+	free(pvNames);
 	goto end_task;
 
 	} else {
@@ -174,6 +176,10 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	rtype = type[0];
 	req_no = argc-first-1;
 	if (req_no > count[0]) req_no = count[0];
+
+	value2 = (char *)calloc(count[0],MAX_STRING_SIZE);
+	value = (void *)value2;
+	ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,value);
 
 	offset = count[0]*dbr_value_size[rtype];
 	buff = (char *)calloc(count[0],MAX_STRING_SIZE);
@@ -219,14 +225,11 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 	case DBR_ENUM: 
 		sv = (short *)value;
 		if (ENUM_V == 0) {
-			strcpy(string_value,dataArray[0]);
-			if (req_no > 1 ) {
-			for (i=1;i<req_no;i++) {
-				strcat(string_value," ");
-				strcat(string_value,dataArray[i]);
-				}
-			ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,string_value);
+			for (i=0;i<req_no;i++) {
+				strcpy(buff+i*MAX_STRING_SIZE,dataArray[i]);
 			}
+			value=(char *)buff;
+			ret = Ezca_putArray(noName,&pvName,DBR_STRING,req_no,value);
 		} else {
 		for (i=0;i<req_no;i++) 
 			sv[i] = atoi(dataArray[i]);
@@ -263,20 +266,24 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 
 /*get new value */
 
+	value = (void *)value2;
+	ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,value);
+
+	value = (void *)buff;
+
 	ret = Ezca_getArray(noName,&pvName,rtype,count[0],value);
 
 	if (!TERSE)
 	if (req_no > 1) printf("New : %s %d ",pvName,req_no);
 		else printf("New : %-30s ",pvName);
 	print_caget();
+	free(value2);
 
 end_task:
 	ca_task_exit();
 
-	free(tempName);
-	free(pvNames);
 	free(dataArray);
-	free(tempValue);
+	free(tempName);
 	free(buff);
 	return(0);
 }
@@ -321,15 +328,10 @@ double *dv;
 				printf("%d ",sv[i]);
 				}
 			} else {
-			offset = MAX_STRING_SIZE;
-			string_value = (char *)calloc(offset,noName);
-			ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,string_value);
-
 			if (ENUM_V == 1) printf("%d ",sv[0]);
-			else if (strlen(string_value) > 0 ) 
-				printf("%s ",string_value);
+			else if (strlen(value2) > 0 ) 
+				printf("%s ",value2);
 			else	printf("%d ",sv[0]);
-			free(string_value);
 			}
 		     break;
 		case DBR_FLOAT:
