@@ -1,0 +1,34 @@
+#	Makefile.Host
+
+TOP = ../../..
+#TOP = ../../../../base
+include $(TOP)/config/CONFIG_EXTENSIONS
+#include $(TOP)/config/CONFIG_BASE
+CMPLR = STRICT
+
+SHARED_LIBRARIES=YES
+
+# install header file
+INC = EzcaScan.h
+
+#
+#	Contents of library: generic, special and for all systems
+#
+
+# on generic system
+LIBSRCS := EzcaFunc.c EzcaHash.c EzcaArray.c EzcaUtil.c \
+	   EzcaMonitor.c  EzcaScan.c EzcaQueue.c
+
+
+#       Library to build:
+#       lib$(LIBRARY).a  or   ..dll/..exp/..lib
+#
+LIBRARY := ezcaScan
+
+#       need additional libs to build
+PROD_LIBS := ezca ca Com
+ezca_DIR=$(INSTALL_LIB)
+
+include $(TOP)/config/RULES.Host
+
+#	EOF Makefile.Host
