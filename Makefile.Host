@@ -32,6 +32,8 @@ caput_LIBS += ezcaScan
 ezca_DIR=$(INSTALL_LIB)
 ezcaScan_DIR=.
 
+USR_CFLAGS = -DACCESS_SECURITY
+
 caget_SRCS = caget.c getopt.c
 caput_SRCS = caput.c getopt.c
 
