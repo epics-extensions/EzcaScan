@@ -1,9 +1,8 @@
 #	Makefile.Host
 
 TOP = ../../..
-#TOP = ../../../../base
+BORLAND_STDC=1
 include $(TOP)/config/CONFIG_EXTENSIONS
-#include $(TOP)/config/CONFIG_BASE
 CMPLR = STRICT
 
 SHARED_LIBRARIES=YES
