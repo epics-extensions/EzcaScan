@@ -33,6 +33,7 @@ LIBRARY := EzcaScan
 
 # need additional libs
 ifdef BASE_3_14
+EzcaFunc_CPPFLAGS += -DBASE_3_14
 PROD_LIBS += EzcaScan ezca ca Com
 else
 PROD_LIBS += ezca ca Com

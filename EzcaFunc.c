@@ -48,7 +48,30 @@ chandata **chanlist;
 void epicsShareAPI Ezca_sleep_time(t)
 double t;    /* wait in seconds can be decimal*/
 {
+#ifdef BASE_3_14
     epicsThreadSleep(t);
+#else
+
+/* usleep isn't ANSI-C/POSIX
+*/
+unsigned u;
+#if defined(HP_UX)
+    sleep((unsigned int)t);
+#elif defined(VMS)
+    LIB$WAIT(t);
+#elif defined(SGI)
+    sleep((unsigned int)t);
+#elif defined(SOLARIS)
+    usleep((unsigned int)t);
+#elif defined(_WIN32)
+        u = 1000 * t;
+    Sleep(u);
+#else
+    u = 1000000 * t;
+    usleep(u);
+#endif
+
+#endif
 }
 
 
