@@ -7,6 +7,7 @@
  * .02  05-18-99        bkc     Fix -s option with ENUM type PV
  * .03  07-28-99        bkc     Fix -t option output
  *                              Add -- on command help for negative value 
+ * .04  08-24-99        bkc     Check ret value for putArray
  */
 
 #ifdef _WIN32
@@ -158,11 +159,13 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 
 	ret = Ezca_putArray(noName,pvNames,DBR_STRING,1,buff);
 
+	if (ret == 0) {
 	ret = Ezca_getArray(noName,pvNames,DBR_STRING,1,buff);
 	for (i=0;i<req_no;i++) {
 		if (!TERSE) printf("New : %-30s %s\n",pvNames[i],pv[i]);
 		  else printf("%s\n",pv[i]);
 		}
+	}
 
 	free(pv);
 	free(tempValue);
@@ -276,6 +279,7 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 
 /*get new value */
 
+	if (ret == 0 ) {
 	value = (void *)value2;
 	ret = Ezca_getArray(noName,&pvName,DBR_STRING,1,value);
 
@@ -288,6 +292,7 @@ if (argv[optind] == NULL || strlen(argv[optind]) > NAME_LENGTH) {
 		else printf("New : %-30s ",pvName);
 	print_caget();
 	free(value2);
+	} 
 
 end_task:
 	ca_task_exit();
