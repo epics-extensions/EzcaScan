@@ -8,6 +8,10 @@
 \*************************************************************************/
 /*
 	$Id$
+ * Modification Log:
+ * -----------------
+ * .03  09-24-2002      bkc     Remove check pv NAME_LENGTH restriction
+ * .04  04-28-2003      bkc     Fix the problem with -w time out second 
 */
 
 #ifdef _WIN32
@@ -58,7 +62,7 @@ float *fv;
 double *dv;
 int first=1;
 
-	CA.PEND_IO_TIME = 1.0;
+	CA.PEND_IOLIST_TIME = 1.0;
 if (argc < 2) {
 	printf("\nUsage:  caget [-n] [-t] [-f n] [-e n] [-w sec] pv_name\n\n");
 	printf("This command read a value or array of values from one or more IOC channels.\n\n");
@@ -94,8 +98,8 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 		sprintf(e_fmt,"%c-.%se ",37,optarg);
 		break;
 	case 'w':
-		CA.PEND_IO_TIME = atof(optarg);
-		if (CA.PEND_IO_TIME < 1.0) CA.PEND_IO_TIME = 1.0;
+		CA.PEND_IOLIST_TIME = atof(optarg);
+		if (CA.PEND_IOLIST_TIME < 1.0) CA.PEND_IOLIST_TIME = 1.0;
 		break;
 	case '#':
 		WAVEFORM = 1;
@@ -130,7 +134,7 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 	noName = 1;  
 	pvName = Names[j];
 
-	if (pvName == NULL || strlen(pvName) > NAME_LENGTH) {
+	if (pvName == NULL) {
 	printf(" %s is an invalid channel name\n", pvName);
 	} else {
 

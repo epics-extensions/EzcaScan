@@ -7,7 +7,9 @@
 * in the file LICENSE that is included with this distribution. 
 \*************************************************************************/
 /*
- * $Id$
+ * Modification Log:
+ * -----------------
+ * .01  04-28-03        bkc     Fix the problem with -w sec option
  */
 
 #ifdef _WIN32
@@ -58,7 +60,7 @@ double *dv;
 char *tempValue,*tempName,**pvNames;
 int noName,noData;
 
-CA.PEND_IO_TIME = 1.;
+CA.PEND_IOLIST_TIME = 1.;
 
 if (argc < 3) {
 	printf("\nUsage:  caput [-t] [-s] [-w sec] [--] pv_name  pv_value\n\n");
@@ -92,8 +94,8 @@ while ((c = getopt(argc-2,argv,"tsmw:")) != -1)
                 VECTOR = 1;
 		break;
         case 'w':
-                CA.PEND_IO_TIME = atof(optarg);
-                if (CA.PEND_IO_TIME < 1.) CA.PEND_IO_TIME = 1.;
+                CA.PEND_IOLIST_TIME = atof(optarg);
+                if (CA.PEND_IOLIST_TIME < 1.) CA.PEND_IOLIST_TIME = 1.;
                 break;
         }
 
