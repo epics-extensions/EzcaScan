@@ -1,0 +1,4 @@
+Mon Sep  9 10:14:39 CDT 2002
+  Removed calls to ca_task_exit because it should not be 
+  called unless ca_clear_channel is called for all channels first.	
+
