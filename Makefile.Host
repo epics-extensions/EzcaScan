@@ -23,13 +23,19 @@ LIBSRCS := EzcaFunc.c EzcaHash.c EzcaArray.c EzcaUtil.c \
 #
 LIBRARY := EzcaScan
 
-#       need additional libs to build
+# need additional libs
+ifdef BASE_3_14
+PROD_LIBS += EzcaScan ezca ca Com
+else
 PROD_LIBS += ezca ca Com
-
 caget_LIBS += EzcaScan 
 caput_LIBS += EzcaScan 
-ezca_DIR=$(INSTALL_LIB)
-EzcaScan_DIR=.
+endif
+
+ca_DIR = $(EPICS_BASE_LIB)
+Com_DIR = $(EPICS_BASE_LIB)
+ezca_DIR = $(INSTALL_LIB)
+EzcaScan_DIR = $(INSTALL_LIB)
 
 USR_CFLAGS = -DACCESS_SECURITY
 
