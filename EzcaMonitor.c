@@ -28,8 +28,6 @@
 #endif
 
 #define epicsExportSharedSymbols
-#include <shareLib.h>
-
 #include "EzcaScan.h"
 
 extern chandata **chanlist;

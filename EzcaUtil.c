@@ -22,10 +22,9 @@
     #include <ezca.h>
 #endif
 
-#define epicsExportSharedSymbols
-#include <shareLib.h>
-
 #include "epicsVersion.h"
+
+#define epicsExportSharedSymbols
 #include "EzcaScan.h"
 
 int epicsShareAPI Ezca_setPendTime(int flag, float *rtime)

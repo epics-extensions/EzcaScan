@@ -28,10 +28,17 @@
 #endif
 
 #define epicsExportSharedSymbols
-#include <shareLib.h>
 
-#define DB_TEXT_GLBLSOURCE
 #include "EzcaScan.h"
+
+epicsShareDef struct caGlobals CA = {
+    0,      /* CA_ERR */
+    0,      /* devprflag */
+    0,      /* PEND_EVENT_ON */
+    3.0,    /* PEND_IO_TIME */
+    5.0,   /* PEND_IOLIST_TIME */
+    0.001f,  /* PEND_EVENT_TIME */
+    1};     /* VERSION NO */
 
 extern int usleep();
 

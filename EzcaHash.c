@@ -28,8 +28,6 @@
 #define TABSIZE         512
 
 #define epicsExportSharedSymbols
-#include <shareLib.h>
-
 #include "EzcaScan.h"
 
 chandata *pchandata;

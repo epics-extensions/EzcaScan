@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tsDefs.h>
+#include <shareLib.h>
+
 #ifdef EZCA
 	#include <ezca.h>
 #else 
@@ -78,19 +80,7 @@ typedef struct chandata{
 	EVENT_QUEUE *p_event_queue;
         } chandata;
 
-#ifndef DB_TEXT_GLBLSOURCE
-    epicsShareExtern struct caGlobals CA;
-#else
-    epicsShareDef struct caGlobals CA = {
-        0,      /* CA_ERR */
-        0,      /* devprflag */
-        0,      /* PEND_EVENT_ON */
-        3.0,    /* PEND_IO_TIME */
-        5.0,   /* PEND_IOLIST_TIME */
-        0.001f,  /* PEND_EVENT_TIME */
-        1};     /* VERSION NO */
-#endif
-
+epicsShareExtern struct caGlobals CA;
 
 epicsShareFunc double epicsShareAPI Ezca_iocClockTime(TS_STAMP *stamp);
 epicsShareFunc int epicsShareAPI Ezca_getTypeCount(int noName,char **pvName,int *type,int *count);

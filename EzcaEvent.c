@@ -25,8 +25,6 @@
 #endif
 
 #define epicsExportSharedSymbols
-#include <shareLib.h>
-
 #include "EzcaScan.h"
 
 double atof();

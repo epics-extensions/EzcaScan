@@ -24,8 +24,6 @@
     #include <ezca.h>
 #endif
 
-#include <shareLib.h>
-
 #include "EzcaScan.h"
 #include "getopt.h"
 extern chandata **chanlist,*pchandata;
