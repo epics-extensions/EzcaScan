@@ -41,9 +41,7 @@ extern char *optarg;
 extern int optind;
 int TERSE=0,ENUM=0,FORMAT=0,WAVEFORM=0;
 
-main(argc,argv)
-int argc;
-char **argv;
+int main(int argc,char **argv)
 {
 char **Names,*pvName,*string_value;
 char *buff;
@@ -56,7 +54,7 @@ unsigned long offset;
 
 char **pv;
 short *sv;
-char *cv;
+dbr_char_t *cv;
 int *iv;
 float *fv;
 double *dv;
@@ -171,8 +169,8 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 			}
 		     break;
 		case DBR_CHAR:  /* DBR_UCHAR */
-			cv = (char *)value;
-			for (i=0;i<req_no;i++) {
+			cv = (dbr_char_t *)value;
+		        for (i=0;i<req_no;i++) {
 			if (FORMAT==1) printf(f_fmt,(float)cv[i]);
 			else if (FORMAT==2) printf(e_fmt,(float)cv[i]);
 			else 	
