@@ -1,3 +1,11 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 
 /* EzcaQueue.c
  *  special monitor queue for scalar type record
@@ -10,10 +18,6 @@
  *		2 - new event added until the buffer is full,
  *                  a user has to use zero to clear the buffer
  *		3 - most current nmax values are kept in buffer
- * Modification Log:
- * -----------------
- * .01  xx-xx-xx   iii	
- * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
  */
 
 #ifdef _WIN32

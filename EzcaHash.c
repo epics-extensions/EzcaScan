@@ -1,13 +1,15 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /*
  *      Original Author: Ben-chin Cha
  *      Date:            3-10-92
  *
- *
- * Modification Log:
- * -----------------
- * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
- *                        Renamed variable "try" to "attempt" because of
- *                        puzzling name conflict on WIN32
  */
 
 #ifdef _WIN32

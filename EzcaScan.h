@@ -1,14 +1,15 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /*
  *      Original Author: Ben-chin Cha
  *      Date:            11-21-95
  *
- *
- * Modification Log:
- * -----------------
- * .02  mm-dd-yy        iii     Comment
- * .02  09-02-98        MLR     Added includes for WIN32, renamed from Ezca.h
- *                              to EzcaScan.h to avoid conflicts on WIN32
- * .03  09-26-01        MLR     Removed definition of NULL
  */
 
 #ifdef _WIN32
@@ -29,6 +30,10 @@
 	#define BOOL char
 	#define FALSE 0
 	#define TRUE 1
+#endif
+
+#ifndef FLDNAME_SZ
+#define FLDNAME_SZ 4  /*Field Name Size*/
 #endif
 
 #define NAME_LENGTH	PVNAME_SZ+FLDNAME_SZ+2

@@ -1,17 +1,16 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /* EzcaFunc.c
  *
  *      Original Author: Ben-chin Cha
  *      Date:            11-21-95
  *
- * .01  06-13-96 bkc     Add the support of channel list to generate the true
- *                       list to take care the problem produced in the next
- *                       chandata in the link list approach
- * .02  09-02-98 MLR     Changed include from Ezca.h to EzcaScan.h.  Added
- *                       sleep for WIN32
- * .02  10-05-98 bkc     Cleanup the unreferenced local variable and add 
- *                       function prototype to get rid of make warning message 
- * .04  11-28-01 mlr     Test if PV names are zero length and treat same as if
- *                       null pointers.
  */
 
 #ifdef _WIN32

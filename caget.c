@@ -1,11 +1,14 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /*
- * Modification Log:
- * -----------------
- * .01  02-05-1999      bkc     This is created to replace the old ca/caget.c
- *                              The default %g format is used for native float
- *                              or double values.
- * .02  01-20-2000      bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
- */
+	$Id$
+*/
 
 #ifdef _WIN32
 #include "windows.h"

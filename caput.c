@@ -1,16 +1,13 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /*
- * Modification Log:
- * -----------------
- * .01  02-11-99        bkc     Replace old ca/caput.c by this new version
- *                              The default %g format is used for native float
- *                              or double values.
- * .02  05-18-99        bkc     Fix -s option with ENUM type PV
- * .03  07-28-99        bkc     Fix -t option output
- * .04  08-24-99        bkc     Check ret value for putArray
- * .05  08-27-99        bkc     Don't treat the pvname and value as input option
- * .06  01-20-00        bkc     DB_TEXT_GLBLSOURCE already defined in EzcaScan.c
- * .07  06-20-02        bkc     Remove check for pvname length, so it will 
- *                              accept multiple pvnames with length exceeds 40 
+ * $Id$
  */
 
 #ifdef _WIN32

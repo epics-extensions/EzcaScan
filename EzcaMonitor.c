@@ -1,3 +1,11 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /* EzcaMonitor.c
  *
  *      Original Author: Ben-chin Cha
@@ -6,12 +14,6 @@
  * Currently monitored as double 
  * If enum or string type monitored as string
  *
- * Modification Log:
- * -----------------
- * .01  06-14-96  bkc     Use the chanlist instead of next pointer to access
- *                        the list array
- * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
- * .03  04-07-99    BKC   DBR_ENUM is monitored as real value instead of string
  */
 
 #ifdef _WIN32

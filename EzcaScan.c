@@ -1,16 +1,17 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /* EzcaScan.c
  *  Monitored as double values
  *
  *      Original Author: Ben-chin Cha
  *      Date:            11-21-95
  *
- * Modification Log:
- * -----------------
- * .01  04-22-96   bkc  The get array positoner and detector values replaced by
- *                      explicitly find each single PV channel because the 
- *                      timer event in X application completes with the CA 
- *                      events causing corrupted core in the list of PVs
- * .02  09-02-98   MLR  Changed include from Ezca.h to EzcaScan.h
  */
 
 #ifdef _WIN32

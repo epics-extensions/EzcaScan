@@ -1,14 +1,14 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /*
  *      Original Author: Ben-chin Cha
  *      Date:            11-21-95
- *
- * Modification Log:
- * -----------------
- * .01  mm-dd-yy        iii     Comment
- * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
- *                        Changed all sizeof() calls to dbr_value_size[]
- *                          to make it work on Alpha and other architectures
- * .03  07-30-99    bkc   Changed MMDDYY to MONDDYYYY for timestamp
  */
 
 #ifdef _WIN32

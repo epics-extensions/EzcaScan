@@ -1,20 +1,17 @@
+/*************************************************************************\
+* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* National Laboratory.
+* Copyright (c) 2002 The Regents of the University of California, as
+* Operator of Los Alamos National Laboratory.
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution. 
+\*************************************************************************/
 /* EzcaArray.c
  *
  *  Array Get and Array Put  
  *
  *      Original Author: Ben-chin Cha
  *      Date:            11-21-95
- *
- * Modification Log:
- * -----------------
- * .01  06-14-96    bkc   Use the chanlist to replace the next pointer to get
- *                        the correct work list. Because the same PV may appear
- *                        in different concurrent work lists in some of the 
- *                        application where next pointer will get clobber. 
- * .02  09-02-98    MLR   Changed include from Ezca.h to EzcaScan.h
- *                        Changed all sizeof() calls to dbr_value_size[]
- *                          to make it work on Alpha and other architectures
- * .03  07-30-99    bkc   Changed MMDDYY to MONDDYYYY for timestamp
  */
 
 
