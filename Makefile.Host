@@ -23,7 +23,7 @@ LIBSRCS := EzcaFunc.c EzcaHash.c EzcaArray.c EzcaUtil.c \
 #       Library to build:
 #       lib$(LIBRARY).a  or   ..dll/..exp/..lib
 #
-LIBRARY := ezcaScan
+LIBRARY := EzcaScan
 
 #       need additional libs to build
 PROD_LIBS := ezca ca Com
