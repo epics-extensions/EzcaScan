@@ -30,7 +30,7 @@
 
 #include "EzcaScan.h"
 
-epicsShareDef struct caGlobals CA = {
+epicsShareDef struct caGlobals epicsShareFunc CA = {
     0,      /* CA_ERR */
     0,      /* devprflag */
     0,      /* PEND_EVENT_ON */
@@ -105,7 +105,7 @@ int status,command_error;
 		command_error = CA_FAIL;
 		} else  command_error = CA_SUCCESS;
  
-	if (CA.devprflag > 0) fprintf(stderr,"chid=%x, type=%d, state=%d\n",
+	if (CA.devprflag > 0) fprintf(stderr,"chid=%p, type=%ld, state=%d\n",
 	pchandata->chid,pchandata->type,pchandata->state);
 
 	return (command_error);
