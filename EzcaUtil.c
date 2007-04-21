@@ -97,7 +97,7 @@ int epicsShareAPI Ezca_debug(int flag)
 
 int epicsShareAPI Ezca_version(char *str)
 {
-	sprintf(str," (ezca) (EzcaScan%d.0) (%s)\0", CA.version,
+	sprintf(str," (ezca) (EzcaScan%d.0) (%s)", CA.version,
                 EPICS_VERSION_STRING);
         return (CA_SUCCESS);
 
