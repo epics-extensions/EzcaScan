@@ -6,4 +6,5 @@
 2007-05-22 16:04:45 -0500;  author: jba;
 	Removed R3.13 build lines. 
 	Use SHARED_LIBRARIES=YES for non WIN32 builds.
+	Converted to R3.14. Makefiles.
 
