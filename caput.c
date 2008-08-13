@@ -26,7 +26,7 @@
 #endif
 
 #include "EzcaScan.h"
-#include "getopt.h"
+#include "epicsGetopt.h"
 extern chandata **chanlist,*pchandata;
 #if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 extern double atof();

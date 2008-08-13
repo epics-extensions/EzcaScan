@@ -38,8 +38,8 @@ EzcaScan_SYS_LIBS_WIN32 = ws2_32 advapi32 user32
 #PROD_LIBS += EzcaScan ezca ca Com
 
 #PROD_HOST = caget caput
-#caget_SRCS = caget.c getopt.c
-#caput_SRCS = caput.c getopt.c
+#caget_SRCS = caget.c
+#caput_SRCS = caput.c
 
 include $(TOP)/configure/RULES
 
