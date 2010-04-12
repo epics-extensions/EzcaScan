@@ -8,3 +8,5 @@
 	Use SHARED_LIBRARIES=YES for non WIN32 builds.
 	Converted to R3.14. Makefiles.
 
+Mon Apr 12 16:44:50 CDT 2010
+	Portability changes to eliminate compiler warnings.

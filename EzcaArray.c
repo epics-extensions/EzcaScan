@@ -94,8 +94,8 @@ int noName,type,nodata;
 char **pvName;
 void *value;
 {
-int i,status,rtype,command_error=0;
-unsigned long offset,count;
+int i,status,rtype=0,command_error=0;
+unsigned long offset=0,count;
 chandata *list, *pchan;
 char   *tempbuff;
 void   **temp;
@@ -196,8 +196,8 @@ int noName,type,nodata;
 char **pvName;
 void *value;
 {
-int i,ii=0,imax,status,rtype,command_error=0;
-unsigned long offset,count;
+int i,ii=0,imax,status,rtype=0,command_error=0;
+unsigned long offset=0,count;
 chandata *list, *pchan;
 char   *tempbuff;
 struct dbrtemp { chandata *pchan;
@@ -319,7 +319,7 @@ char **pvName;
 void *value;
 {
 int i,status,command_error=0;
-unsigned long offset,count;
+unsigned long offset=0,count;
 chandata *list, *pchan;
 void   **temp;
 /* char *tempbuff; */
@@ -414,7 +414,7 @@ char **pvName;
 void *value;
 {
 int i,status,command_error=0,imax,ii=0;
-unsigned long offset,count;
+unsigned long offset=0,count;
 chandata *list, *pchan;
 void   **temp;
 struct dbrtemp { chandata *pchan;

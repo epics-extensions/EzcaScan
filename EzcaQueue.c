@@ -291,7 +291,7 @@ int epicsShareAPI Ezca_queueAdd(mode,maxvalues,noName,pvName)
 int noName,mode,maxvalues;
 char **pvName;
 {
-int i=0,status,command_error=0;
+int i=0,status=0,command_error=0;
 chandata *list,*snode,*pchan;
 
         command_error = Ezca_pvlist_search(noName,pvName,&list);
@@ -333,7 +333,7 @@ chandata *list,*snode,*pchan;
 			Ezca_connectionAddEvent(pchan);  
 
 			if (CA.devprflag > 0)
-			fprintf(stderr,"name=%s, evid=%x\n",
+			fprintf(stderr,"name=%s, evid=%p\n",
 				ca_name(pchan->chid),pchan->evid);
 			}
 		snode = snode->next;

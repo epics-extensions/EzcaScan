@@ -49,7 +49,7 @@ int main(argc,argv)
 int argc;
 char **argv;
 {
-int c,found,ret,i,j=0,len,first=1;
+int c,found,ret,i,len,first=1;
 char **pv,**dataArray;
 short *sv;
 dbr_char_t *cv;
@@ -353,7 +353,7 @@ double *dv;
 			} else {
 			if (ENUM_V == 1) printf("%d ",sv[0]);
 			else if (strlen(value) > 0 ) 
-				printf("%s ",value);
+				printf("%s ",(char *)value);
 			else	printf("%d ",sv[0]);
 			}
 		     break;

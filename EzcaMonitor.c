@@ -84,7 +84,7 @@ if (chanlist != NULL) {
 			Ezca_connectionAddEvent(pchan);  
 
 			if (CA.devprflag > 0)
-			fprintf(stderr,"Ezca_monitorArrayAdd: name=%s, evid=%x\n",
+			fprintf(stderr,"Ezca_monitorArrayAdd: name=%s, evid=%p\n",
 				ca_name(pchan->chid),pchan->evid);
 			}
                 }

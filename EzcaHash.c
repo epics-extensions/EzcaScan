@@ -172,7 +172,6 @@ chandata * epicsShareAPI Ezca_check_hash_table(name)
 char *name;
 {
 int status=ECA_GETFAIL;
-chid *cid;
 
   switch (pv_search(name)) {
 	case FOUND: /*		printf("Already exists!\n");  */

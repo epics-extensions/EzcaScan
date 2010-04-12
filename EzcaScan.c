@@ -143,7 +143,7 @@ int command_error=0;
 ******************************************************/
 int epicsShareAPI Ezca_scanAddMonitor(chandata *pchandata,int npts,int nonames,char **pvnames)
 {
-int i=0,status,command_error=0;
+int i=0,status=0,command_error=0;
 
         pchandata->type = ca_field_type(pchandata->chid);
         if (pchandata->state != cs_conn) command_error = CA_FAIL;
