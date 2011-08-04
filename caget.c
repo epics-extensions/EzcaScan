@@ -28,6 +28,7 @@
 #endif
 
 #include "EzcaScan.h"
+#include "epicsGetopt.h"
 
 extern chandata **chanlist,*pchandata;
 
@@ -249,5 +250,43 @@ while ((c = getopt(argc,argv,"ntf:e:w:#:")) != -1)
 
 	free(Names);
 	return(0);  /*exit(0); */
+}
+
+
+int no_elements(stringVar)
+char *stringVar;
+{
+int i,j=0,len;
+char *s1;
+        len = strlen(stringVar);
+        s1 = stringVar;
+
+        for (i=0;i<len;i++) {
+        if (*(s1+i) == 44) j++;    /* ',' */
+        }
+        return(j+1);
+}
+
+
+int data_array(stringVar,strarray)
+char *stringVar;
+char **strarray;
+{
+int i,j=0,c,len;
+char *s1;
+	len = strlen(stringVar);
+	s1 = stringVar;
+	strarray[0] = s1;
+
+	for (i=0;i<len;i++) {
+	c = *(s1+i);
+	if (*(s1+i) == 44) {  /* ',' = 44,*/ 
+		j++;
+		strarray[j] = s1+i+1;
+		*(s1+i)='\0';
+		}
+	}
+
+	return(j+1);
 }
 
