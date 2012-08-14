@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <epicsTime.h>
 #ifdef EZCA
     #include <ezca.h>
 #endif
@@ -39,13 +40,13 @@ char nowText[33];
 double time;
 
 	if ((stamp->nsec + stamp->secPastEpoch) == 0 ) 
-		tsLocalTime(stamp);
+		epicsTimeGetCurrent(stampTS);
 		
 	time = 0.001 * (stamp->nsec / 1000000) + stamp->secPastEpoch;
 
 	if (CA.devprflag > 0) {
-		fprintf(stderr,"tsStampToText:%s",
-			tsStampToText(stamp,TS_TEXT_MONDDYYYY,nowText));
+		epicsTimeToStrftime(nowText,"%b %d, %Y %H:%M:%S.%09f",stamp)
+		fprintf(stderr,"epicsTimeToStrftime:%s", nowText);
 		fprintf(stderr," IOC time=%.3f sec\n", time);
 		}
 	

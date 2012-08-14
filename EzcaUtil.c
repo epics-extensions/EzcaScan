@@ -118,14 +118,14 @@ extern chandata *pchandata;
 		command_error = Ezca_monitorArrayAdd(1,&name);
 		if (command_error == 0) {
                 stamp = pchandata->stamp;
-                tsStampToText(&stamp,TS_TEXT_MONDDYYYY,nowText);
+		epicsTimeToStrftime(nowText,32,"%b %d, %Y %H:%M:%S.%09f",&stamp);
 		strcpy(str,nowText);
 		command_error = Ezca_monitorArrayClear(1,&name);
 		}
 	} else
 	if (pchandata->evid) {
                 stamp = pchandata->stamp;
-                tsStampToText(&stamp,TS_TEXT_MONDDYYYY,nowText);
+		epicsTimeToStrftime(nowText,32,"%b %d, %Y %H:%M:%S.%09f",&stamp);
 		strcpy(str,nowText);
         }
         return (command_error);

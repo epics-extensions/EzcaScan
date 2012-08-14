@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tsDefs.h>
 #include <shareLib.h>
 
 #ifdef EZCA
