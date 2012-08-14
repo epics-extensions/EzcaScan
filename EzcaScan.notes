@@ -10,3 +10,6 @@
 
 Mon Apr 12 16:44:50 CDT 2010
 	Portability changes to eliminate compiler warnings.
+
+Tue Aug 14 16:37:30 CDT 2012
+	Changed from tsDefs API to epicsTime API.
