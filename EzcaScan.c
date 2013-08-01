@@ -260,19 +260,26 @@ temp_evid = pchan->evid;
         if (pchan->state != cs_conn) 
 		command_error = CA_FAIL;
 	else  if (temp_evid ) {
-	if (pchan->p_event_queue->numvalues > 0) { 
-	nonames = pchan->p_event_queue->overflow;
-	ii = nonames*pchan->p_event_queue->numvalues;
-	for (i=0;i<ii;i++) {	 
-		*(vals+i) = *(pchan->p_event_queue->pvalues+i); 
-		}
-	}
+            if (pchan->p_event_queue != NULL) {
+            	if (pchan->p_event_queue->numvalues > 0) { 
+                	nonames = pchan->p_event_queue->overflow;
+	                ii = nonames*pchan->p_event_queue->numvalues;
+	                for (i=0;i<ii;i++) {	 
+		                *(vals+i) = *(pchan->p_event_queue->pvalues+i); 
+		            }
+	             }
 
-	num =  pchan->p_event_queue->numvalues;
-
+	            num =  pchan->p_event_queue->numvalues;
+                 
+            } else {
+                if (CA.devprflag > 0)
+                    fprintf(stderr, "Ezca_scanGetMonitor found p_event_queue unitialized.   Channel Name %s.  Returning CA_FAIL.\n", 
+                        ca_name(pchan->chid));
+                return CA_FAIL;
+            }
 	} else {
                 if (CA.devprflag >= 0)
-		fprintf(stderr,"Error: %s is not monitored yet.\n",
+		fprintf(stderr,"Error (Ezca_scanGetMonitor): %s is not monitored yet.\n",
 			ca_name(pchan->chid)); 
 		}
 
@@ -293,20 +300,28 @@ int nonames;
 
         snode = list;
         while (snode)  {
-                pchan = snode;
-                pchan->type = ca_field_type(pchan->chid);
-                if (pchan->state != cs_conn) 
-                        command_error = CA_FAIL;
-		else 
-		if (pchan->evid) {
-		size = pchan->p_event_queue->maxvalues;
-		nonames = pchan->p_event_queue->overflow;
-		for (i=0;i<nonames*size;i++) pchan->p_event_queue->pvalues[i] = 0.;
-		pchan->p_event_queue->numvalues = 0;
-		pchan->event = 0;
-
-			}
-	snode = snode->next;
+            pchan = snode;
+            pchan->type = ca_field_type(pchan->chid);
+            if (pchan->state != cs_conn) 
+                    command_error = CA_FAIL;
+	        else 
+   	        if (pchan->evid) {
+                if (pchan->p_event_queue != NULL) {
+        		    size = pchan->p_event_queue->maxvalues;
+	        	    nonames = pchan->p_event_queue->overflow;
+	        	    for (i=0;i<nonames*size;i++) pchan->p_event_queue->pvalues[i] = 0.;
+            	    pchan->p_event_queue->numvalues = 0;
+            	    pchan->event = 0;
+                }
+                else {
+                    if (CA.devprflag > 0)
+                       fprintf(stderr, "Ezca_scanZeroMonitor found p_event_queue unitialized.  Channel Name %s. Returning CA_FAIL.\n",
+                            ca_name(pchan->chid));
+                    return CA_FAIL;
+                }
+                    
+	        }
+	        snode = snode->next;
         }
 
 	ca_pend_event(CA.PEND_EVENT_TIME);
