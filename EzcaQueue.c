@@ -14,10 +14,10 @@
  *      Date:            11-21-95
  *
  * Monitor queue can operate in 3 modes
- *		1 - clear buffer for each get   		
- *		2 - new event added until the buffer is full,
+ *        1 - clear buffer for each get           
+ *        2 - new event added until the buffer is full,
  *                  a user has to use zero to clear the buffer
- *		3 - most current nmax values are kept in buffer
+ *        3 - most current nmax values are kept in buffer
  */
 
 #ifdef _WIN32
@@ -37,21 +37,22 @@
 #define epicsExportSharedSymbols
 #include "EzcaScan.h"
 
-extern chandata *pchandata;
-
+//chandata *pchandata;
+/**
+*/
 EVENT_QUEUE * epicsShareAPI Ezca_queueAlloc(int size)
 {
-EVENT_QUEUE *pevent;
-	pevent = (EVENT_QUEUE *)calloc(1,sizeof(EVENT_QUEUE));
-	pevent->pvalues = (double *)calloc(size,sizeof(double));
-	if (pevent->pvalues == NULL) {
-		fprintf(stderr,"Error: Ezca_queueAlloc failed to calloc !\n");
-		exit(CA_ALLOC);
-		}
-    	pevent->maxvalues = size;
-	pevent->numvalues = 0;
-	pevent->overflow = 0;
-	return(pevent);
+    EVENT_QUEUE *pevent;
+    pevent = (EVENT_QUEUE *)calloc(1,sizeof(EVENT_QUEUE));
+    pevent->pvalues = (double *)calloc(size,sizeof(double));
+    if (pevent->pvalues == NULL) {
+        fprintf(stderr,"Error: Ezca_queueAlloc failed to calloc !\n");
+        exit(CA_ALLOC);
+    }
+    pevent->maxvalues = size;
+    pevent->numvalues = 0;
+    pevent->overflow = 0;
+    return(pevent);
 }
 
 
@@ -61,49 +62,52 @@ EVENT_QUEUE *pevent;
 void Ezca_queueValueChangeCallback(args)
 struct event_handler_args args;
 {
-chandata *pchandata;
-double time;
+    chandata *pchandata;
+    double time;
 
-	pchandata = (chandata *)args.usr;
+    pchandata = (chandata *)args.usr;
 
 #ifdef ACCESS_SECURITY
-	if (args.status == ECA_NORMAL) {
+    if (args.status == ECA_NORMAL) {
 #endif
-	
-	if (CA.devprflag > 1)
-	fprintf(stderr,"Old: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
-		ca_name(pchandata->chid),
-		pchandata->value, pchandata->status,
-		pchandata->severity,pchandata->event);
-	pchandata->value = ((struct dbr_time_double *)args.dbr)->value;
+    
+        if (CA.devprflag > 1) 
+        {
+            fprintf(stderr,"Old: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
+                ca_name(pchandata->chid),
+                pchandata->value, pchandata->status,
+                pchandata->severity,pchandata->event);
+        }
+        pchandata->value = ((struct dbr_time_double *)args.dbr)->value;
         pchandata->status= ((struct dbr_time_double *)args.dbr)->status;
         pchandata->severity = ((struct dbr_time_double *)args.dbr)->severity;
-	pchandata->event = 2;
+        pchandata->event = 2;
 
-	pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
-	if (CA.devprflag > 1) {
-	time = Ezca_iocClockTime(&pchandata->stamp);
-	fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
-		ca_name(pchandata->chid),
-		pchandata->value, pchandata->status,
-		pchandata->severity,pchandata->event);
-		
-
-	}
+        pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
+        if (CA.devprflag > 1) {
+            time = Ezca_iocClockTime(&pchandata->stamp);
+            fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
+                ca_name(pchandata->chid),
+                pchandata->value, pchandata->status,
+                pchandata->severity,pchandata->event);
+        }
 #ifdef ACCESS_SECURITY
-	}
-	else
-	if (CA.devprflag > 0)
-	fprintf(stderr,"Diagnostic: Read access denied : %s\n",
-                ca_name(pchandata->chid));
+    }
+    else
+        if (CA.devprflag > 0)
+            fprintf(stderr,"Diagnostic: Read access denied : %s\n",
+                        ca_name(pchandata->chid));
 #endif
-if (pchandata->p_event_queue->numvalues < pchandata->p_event_queue->maxvalues) {
-	*(pchandata->p_event_queue->pvalues+pchandata->p_event_queue->numvalues) 		= pchandata->value; 
-	pchandata->p_event_queue->numvalues += 1;
-	if (pchandata->p_event_queue->numvalues >= 
-		pchandata->p_event_queue->maxvalues) 
-			pchandata->p_event_queue->overflow = 1;
-}
+    if (pchandata->p_event_queue->numvalues < pchandata->p_event_queue->maxvalues) {
+        *(pchandata->p_event_queue->pvalues+pchandata->p_event_queue->numvalues) = 
+            pchandata->value; 
+        pchandata->p_event_queue->numvalues += 1;
+        if (pchandata->p_event_queue->numvalues >= 
+            pchandata->p_event_queue->maxvalues) 
+        {
+           pchandata->p_event_queue->overflow = 1;
+        }
+    }
 }
 
 /******************************************************
@@ -112,56 +116,59 @@ if (pchandata->p_event_queue->numvalues < pchandata->p_event_queue->maxvalues) {
 void Ezca_queueValueChangeCallback3(args)
 struct event_handler_args args;
 {
-chandata *pchandata;
-int ne;
-double time;
+    chandata *pchandata;
+    int ne;
+    double time;
 
-	pchandata = (chandata *)args.usr;
+    pchandata = (chandata *)args.usr;
 
 #ifdef ACCESS_SECURITY
-	if (args.status == ECA_NORMAL) {
+    if (args.status == ECA_NORMAL) {
 #endif
-	
-	if (CA.devprflag > 1)
-	fprintf(stderr,"Old: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
-		ca_name(pchandata->chid),
-		pchandata->value, pchandata->status,
-		pchandata->severity,pchandata->event);
-	pchandata->value = ((struct dbr_time_double *)args.dbr)->value;
+    
+        if (CA.devprflag > 1)
+        {
+            fprintf(stderr,"Old: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
+                ca_name(pchandata->chid),
+                pchandata->value, pchandata->status,
+                pchandata->severity,pchandata->event);
+        }
+        pchandata->value = ((struct dbr_time_double *)args.dbr)->value;
         pchandata->status= ((struct dbr_time_double *)args.dbr)->status;
         pchandata->severity = ((struct dbr_time_double *)args.dbr)->severity;
-	pchandata->event = 2;
+        pchandata->event = 2;
 
-	pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
-	if (CA.devprflag > 1) {
-	time = Ezca_iocClockTime(&pchandata->stamp);
-	fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
-		ca_name(pchandata->chid),
-		pchandata->value, pchandata->status,
-		pchandata->severity,pchandata->event);
-		
-
-	}
+        pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
+        if (CA.devprflag > 1) {
+            time = Ezca_iocClockTime(&pchandata->stamp);
+            fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
+                ca_name(pchandata->chid),
+                pchandata->value, pchandata->status,
+                pchandata->severity,pchandata->event);
+        }
 #ifdef ACCESS_SECURITY
-	}
-	else 
-	if (CA.devprflag > 0) fprintf(stderr,"Diagnostic: Read access denied : %s\n",
-                ca_name(pchandata->chid));
+    }
+    else 
+        if (CA.devprflag > 0) fprintf(stderr,"Diagnostic: Read access denied : %s\n",
+                    ca_name(pchandata->chid));
 #endif
-if (pchandata->p_event_queue->numvalues <= pchandata->p_event_queue->maxvalues) {
-	*(pchandata->p_event_queue->pvalues+pchandata->p_event_queue->numvalues) 		= pchandata->value; 
-	pchandata->p_event_queue->numvalues += 1;
-	if (pchandata->p_event_queue->numvalues >= 
-		pchandata->p_event_queue->maxvalues) 
-			pchandata->p_event_queue->overflow = 1;
-	}
-else {
-
-	pchandata->p_event_queue->numvalues += 1;
-	pchandata->p_event_queue->overflow = 1;
-	ne = pchandata->p_event_queue->numvalues%pchandata->p_event_queue->maxvalues;
-	*(pchandata->p_event_queue->pvalues+ne) = pchandata->value;
-	}
+    if (pchandata->p_event_queue->numvalues <= pchandata->p_event_queue->maxvalues) 
+    {
+        *(pchandata->p_event_queue->pvalues+pchandata->p_event_queue->numvalues) = pchandata->value; 
+        pchandata->p_event_queue->numvalues += 1;
+        if (pchandata->p_event_queue->numvalues >= 
+            pchandata->p_event_queue->maxvalues) 
+        {
+            pchandata->p_event_queue->overflow = 1;
+        }
+    }
+    else 
+    {
+        pchandata->p_event_queue->numvalues += 1;
+        pchandata->p_event_queue->overflow = 1;
+        ne = pchandata->p_event_queue->numvalues%pchandata->p_event_queue->maxvalues;
+        *(pchandata->p_event_queue->pvalues+ne) = pchandata->value;
+    }
 }
 
 /******************************************************
@@ -172,83 +179,93 @@ int *overflow,mode,*num;
 char *pvName;
 double *vals;
 {
-int i,command_error=0,ne,ii;
-chandata *pchan;
+    int i,command_error=0,ne,ii;
+    chandata *pchandata;
+    chandata *pchan;
 
-	*num = CA_FAIL;
-	ca_pend_event(0.00001);
+    *num = CA_FAIL;
+    ca_pend_event(0.00001);
 
-	Ezca_find_dev(pvName,pchandata);
-	pchan=pchandata;
+    Ezca_find_dev(pvName,&pchandata);
+    pchan=pchandata;
 
-        pchan->type = ca_field_type(pchan->chid);
-        if (pchan->state != cs_conn) 
-		command_error = CA_FAIL;
-	else  if (pchan->evid ) {
+    pchan->type = ca_field_type(pchan->chid);
+    if (pchan->state != cs_conn) 
+    {
+        command_error = CA_FAIL;
+    }
+    else  if (pchan->evid ) 
+    {
 
-	if (mode == 1) {
-        for (i=0;i<pchan->p_event_queue->numvalues;i++) {
+        if (mode == 1) {
+            for (i=0;i<pchan->p_event_queue->numvalues;i++) 
+            {
                 vals[i] = pchan->p_event_queue->pvalues[i];
+            }
+            if (pchan->event) {
+               *num =  pchan->p_event_queue->numvalues;
+                *overflow = pchan->p_event_queue->overflow;
+                pchan->p_event_queue->numvalues = 0;
+                pchan->p_event_queue->overflow = 0;
+                pchan->event = 0;  /* reset after read*/
+            }
+        }
+
+        if (mode == 2) 
+        {
+            for (i=0;i<pchan->p_event_queue->numvalues;i++) {     
+                vals[i] = pchan->p_event_queue->pvalues[i]; 
+            }
+            /* reset after read*/
+            *num =  pchan->p_event_queue->numvalues;
+            *overflow = pchan->p_event_queue->overflow;
+        }
+
+        if (mode == 3) 
+        {
+            if (pchan->p_event_queue->numvalues < pchan->p_event_queue->maxvalues) 
+            {
+                for (i=0;i<pchan->p_event_queue->numvalues;i++) {     
+                    vals[i] = pchan->p_event_queue->pvalues[i]; 
+                    *num =  pchan->p_event_queue->numvalues;
+                    *overflow = pchan->p_event_queue->overflow;
                 }
-        	if (pchan->event) {
-               		*num =  pchan->p_event_queue->numvalues;
-                	*overflow = pchan->p_event_queue->overflow;
-                	pchan->p_event_queue->numvalues = 0;
-                	pchan->p_event_queue->overflow = 0;
-                	pchan->event = 0;  /* reset after read*/
-                	}
-		}
+            } 
+            else 
+            {
+                ne = pchan->p_event_queue->numvalues%pchan->p_event_queue->maxvalues;
+                for (i=0;i<pchan->p_event_queue->maxvalues;i++) {
+                    ii = ne + 1 + i;
+                    if (ii >= pchan->p_event_queue->maxvalues) 
+                       ii = ii - pchan->p_event_queue->maxvalues;
+                    vals[i] = pchan->p_event_queue->pvalues[ii];
+                    pchan->p_event_queue->overflow = 1;
+                }
+                *num =  pchan->p_event_queue->maxvalues;
+                           *overflow = pchan->p_event_queue->overflow; 
+            }
+            pchan->event = 0;
+        }
 
-	if (mode == 2) {
-		for (i=0;i<pchan->p_event_queue->numvalues;i++) {	 
-			vals[i] = pchan->p_event_queue->pvalues[i]; 
-			}
-		/* reset after read*/
-			*num =  pchan->p_event_queue->numvalues;
-			*overflow = pchan->p_event_queue->overflow;
-		}
+        if (CA.devprflag > 0) { 
+            fprintf(stderr,"Ezca_queueGet: name=%s, value=%f, status=%d, event=%d\n",
+                ca_name(pchan->chid),pchan->value,
+                pchan->status,pchan->event);
+            fprintf(stderr,"p_event_queue->values: ");
+            
+            for (i=0;i<*num;i++) {     
+                fprintf(stderr,"%f ",vals[i]);
+            }
+            fprintf(stderr,"\n");
+        }
 
-	if (mode == 3) {
-	if (pchan->p_event_queue->numvalues < pchan->p_event_queue->maxvalues) {
-		for (i=0;i<pchan->p_event_queue->numvalues;i++) {	 
-			vals[i] = pchan->p_event_queue->pvalues[i]; 
-			*num =  pchan->p_event_queue->numvalues;
-			*overflow = pchan->p_event_queue->overflow;
-			}
-		} else {
-		ne = pchan->p_event_queue->numvalues%pchan->p_event_queue->maxvalues;
-		for (i=0;i<pchan->p_event_queue->maxvalues;i++) {
-			ii = ne + 1 + i;
-			if (ii >= pchan->p_event_queue->maxvalues) 
-			   ii = ii - pchan->p_event_queue->maxvalues;
-			vals[i] = pchan->p_event_queue->pvalues[ii];
-			pchan->p_event_queue->overflow = 1;
-			}
-		*num =  pchan->p_event_queue->maxvalues;
-       	        *overflow = pchan->p_event_queue->overflow; 
-		}
-		pchan->event = 0;
-		}
+    } else {
+        if (CA.devprflag >= 0)
+             fprintf(stderr,"Ezca_queueGet Error: %s is not monitored yet.\n",
+                ca_name(pchan->chid)); 
+    }
 
-	if (CA.devprflag > 0) { 
-		fprintf(stderr,"Ezca_queueGet: name=%s, value=%f, status=%d, event=%d\n",
-		ca_name(pchan->chid),pchan->value,
-		pchan->status,pchan->event);
-		fprintf(stderr,"p_event_queue->values: ");
-		
-		for (i=0;i<*num;i++) {	 
-			fprintf(stderr,"%f ",vals[i]);
-			}
-		fprintf(stderr,"\n");
-		}
-
-	} else {
-                if (CA.devprflag >= 0)
-		 fprintf(stderr,"Ezca_queueGet Error: %s is not monitored yet.\n",
-			ca_name(pchan->chid)); 
-		}
-
-	return (command_error);
+    return (command_error);
 }
 
 /******************************************************
@@ -256,30 +273,40 @@ zero a monitor queue list , return CA.CA_ERR
 ******************************************************/
 int epicsShareAPI Ezca_queueZero(int noName,char **pvName)
 {
-int i,command_error=0,size;
-chandata *list,*snode,*pchan;
-        command_error = Ezca_pvlist_search(noName,pvName,&list);
+    int i,command_error=0,size;
+    chandata **chanlist;
+    chandata *list,*snode,*pchan;
 
-        snode = list;
-        while (snode)  {
-                pchan = snode;
-                pchan->type = ca_field_type(pchan->chid);
-                if (pchan->state != cs_conn) 
-                        command_error = CA_FAIL;
-		else 
-		if (pchan->evid) {
-		size =  pchan->p_event_queue->maxvalues;
-		for (i=0;i<size;i++) pchan->p_event_queue->pvalues[i] = 0.;
-		pchan->p_event_queue->numvalues = 0;
-		pchan->p_event_queue->overflow = 0;
-		pchan->event = 0;  
-			}
-	snode = snode->next;
+    chanlist = (chandata **)calloc(noName,sizeof(chandata *));
+    command_error = Ezca_pvlist_search(noName,pvName,&list, &chanlist);
+
+    snode = list;
+    while (snode)  {
+        pchan = snode;
+        pchan->type = ca_field_type(pchan->chid);
+
+        if (pchan->state != cs_conn) 
+        {
+            command_error = CA_FAIL;
         }
+        else 
+        {    
+            if (pchan->evid) {
+                size =  pchan->p_event_queue->maxvalues;
+                for (i=0;i<size;i++) {
+                    pchan->p_event_queue->pvalues[i] = 0.;
+                }
+                pchan->p_event_queue->numvalues = 0;
+                pchan->p_event_queue->overflow = 0;
+                pchan->event = 0;  
+            }
+        }
+        snode = snode->next;
+    }
 
-	ca_pend_event(CA.PEND_EVENT_TIME);
+    ca_pend_event(CA.PEND_EVENT_TIME);
 
-	return(command_error);
+    return(command_error);
 }
 
 
@@ -293,8 +320,9 @@ char **pvName;
 {
 int i=0,status=0,command_error=0;
 chandata *list,*snode,*pchan;
-
-        command_error = Ezca_pvlist_search(noName,pvName,&list);
+chandata **chanlist;
+        chanlist = (chandata **)calloc(noName,sizeof(chandata *));
+        command_error = Ezca_pvlist_search(noName,pvName,&list, &chanlist);
 
         snode = list;
         while (snode)  {
@@ -302,9 +330,9 @@ chandata *list,*snode,*pchan;
                 pchan->type = ca_field_type(pchan->chid);
                 if (pchan->state != cs_conn) 
                         command_error = CA_FAIL;
-		else  if (pchan->evid == NULL) {
+        else  if (pchan->evid == NULL) {
 
-	if (mode < 3)  {
+    if (mode < 3)  {
                 status = ca_add_masked_array_event(DBR_TIME_DOUBLE,0,
                         pchan->chid,
                         Ezca_queueValueChangeCallback,
@@ -312,37 +340,37 @@ chandata *list,*snode,*pchan;
                         (float)0,(float)0,(float)0,
                         &(pchan->evid),
                         DBE_VALUE | DBE_ALARM);
-			}
-	if (mode == 3)  {
-       		status = ca_add_masked_array_event(DBR_TIME_DOUBLE,0,
-                	pchan->chid,
-			Ezca_queueValueChangeCallback3,
-	                pchan,
-       	        	(float)0,(float)0,(float)0,
-       	        	&(pchan->evid),
-                	DBE_VALUE | DBE_ALARM);
-			}
+            }
+    if (mode == 3)  {
+               status = ca_add_masked_array_event(DBR_TIME_DOUBLE,0,
+                    pchan->chid,
+            Ezca_queueValueChangeCallback3,
+                    pchan,
+                       (float)0,(float)0,(float)0,
+                       &(pchan->evid),
+                    DBE_VALUE | DBE_ALARM);
+            }
 
-			pchan->error = status;
+            pchan->error = status;
 
-			pchan->p_event_queue = 
-		           (EVENT_QUEUE *)Ezca_queueAlloc(maxvalues);
+            pchan->p_event_queue = 
+                   (EVENT_QUEUE *)Ezca_queueAlloc(maxvalues);
 
-			/* automatically add a change connection event */
+            /* automatically add a change connection event */
 
-			Ezca_connectionAddEvent(pchan);  
+            Ezca_connectionAddEvent(pchan);  
 
-			if (CA.devprflag > 0)
-			fprintf(stderr,"name=%s, evid=%p\n",
-				ca_name(pchan->chid),pchan->evid);
-			}
-		snode = snode->next;
-		i++;
+            if (CA.devprflag > 0)
+            fprintf(stderr,"name=%s, evid=%p\n",
+                ca_name(pchan->chid),pchan->evid);
+            }
+        snode = snode->next;
+        i++;
                 }
 
-	ca_pend_event(CA.PEND_EVENT_TIME);
-	
-	return(command_error);
+    ca_pend_event(CA.PEND_EVENT_TIME);
+    
+    return(command_error);
 }
 
 
@@ -355,8 +383,10 @@ char **pvName;
 {
 int status,command_error=0;
 chandata *list,*snode,*pchan;
+chandata **chanlist;
 
-        command_error = Ezca_pvlist_search(noName,pvName,&list);
+        chanlist = (chandata **)calloc(noName,sizeof(chandata *));
+        command_error = Ezca_pvlist_search(noName,pvName,&list, &chanlist);
 
         snode = list;
         while (snode)  {
@@ -364,21 +394,21 @@ chandata *list,*snode,*pchan;
                 pchan->type = ca_field_type(pchan->chid);
                 if (pchan->state != cs_conn) 
                         command_error = CA_FAIL;
-		else 
-			if (pchan->evid) {
-			status = ca_clear_event(pchan->evid);
-			pchan->error = status;
-			pchan->evid = NULL;
-			free(pchan->p_event_queue->pvalues);
-			free(pchan->p_event_queue);
-			pchan->p_event_queue = NULL;
-				}
-		snode = snode->next;
+        else 
+            if (pchan->evid) {
+            status = ca_clear_event(pchan->evid);
+            pchan->error = status;
+            pchan->evid = NULL;
+            free(pchan->p_event_queue->pvalues);
+            free(pchan->p_event_queue);
+            pchan->p_event_queue = NULL;
+                }
+        snode = snode->next;
                 }
 
 
-	ca_pend_event(CA.PEND_EVENT_TIME);
+    ca_pend_event(CA.PEND_EVENT_TIME);
 
-	return(command_error);
+    return(command_error);
 }
 

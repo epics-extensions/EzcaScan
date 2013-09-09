@@ -32,17 +32,17 @@
 #define epicsExportSharedSymbols
 #include "EzcaScan.h"
 
-chandata *pchandata;
+//chandata *pchandata;
 
 typedef struct item item;
 struct item {
-	item *next;
-	chandata *pchandata;
-	};
+    item *next;
+    chandata *pchandata;
+    };
 
 item  *table[TABSIZE];
-int num; 	/* no of occupied slots in table */
-int succlen;	/* total length of all successful searches */
+int num;     /* no of occupied slots in table */
+int succlen;    /* total length of all successful searches */
 
 #if !defined(_WIN32) && !defined(LINUX) && !defined(SOLARIS)
 static int hash7();
@@ -51,7 +51,7 @@ static int pv_search();
 #else
 static int hash7(char *s);
 static chandata *AllocChandata(void);
-static int pv_search(char *s);
+static int pv_search(char *s, chandata **pchandata);
 #endif
 
 static int T[256] = {
@@ -99,20 +99,21 @@ static int TT[256] = {
 static int hash7(s)
 char *s;
 {
-int i,len;
-int h,h0,h1;
-char *str;
-        str = s;
-	len = strlen(s);
-        h = 0; h0=0; h1=0;
-        for (i=0; i < len; i+=2,str+=2 ) {
+    int i,len;
+    int h,h0,h1;
+    char *str;
+
+    str = s;
+    len = strlen(s);
+    h = 0; h0=0; h1=0;
+    for (i=0; i < len; i+=2,str+=2 ) {
         h0 = h0  ^ (*(char *)str);
         h1 = h1 ^ (*(char *)(str+1));
-         h0 = T[h0];
-         h1 = TT[h1];
-        }
-        h = h0+h1+1;
-return h;
+        h0 = T[h0];
+        h1 = TT[h1];
+    }
+    h = h0+h1+1;
+    return h;
 }
 
 /******************************************
@@ -120,48 +121,50 @@ return h;
  ******************************************/
 static chandata *AllocChandata()
 {
-chandata *cdata;
-	cdata = (chandata *) calloc(1,sizeof(chandata));
-	if (cdata == NULL) {
-		 printf("Ezca: AllocChandata failed on pchandata\n");
-		 exit(CA_ALLOC);
-		}
-	cdata->type = TYPENOTCONN;
-	return (cdata);
+    chandata *cdata;
+
+    cdata = (chandata *) calloc(1,sizeof(chandata));
+    if (cdata == NULL) {
+         printf("Ezca: AllocChandata failed on pchandata\n");
+         exit(CA_ALLOC);
+    }
+    cdata->type = TYPENOTCONN;
+    return (cdata);
 }
 
 /****************************************************************
  * find 's' in the hash table, if not found allocate space for it 
 ****************************************************************/
-static int pv_search(s)
+static int pv_search(s, pchandata)
 char *s;
+chandata **pchandata;
 {
-	int h, len = 1;
-	item **attempt;   /* ,*temp; */
-	
-	h = hash7(s); 
-	if (h < 0) {
-	printf("Error: h can not be negative\n");
-	exit(0);
-	}
-	attempt = &table[h];
-	while (*attempt) {
-	  pchandata = (*attempt)->pchandata;
-	  if (strcmp( ca_name(pchandata->chid),s) == 0) return FOUND;
-	  	len++;
-		attempt = &((*attempt)->next);
-		}
+    int h, len = 1;
+    item **attempt;   /* ,*temp; */
+    
+    h = hash7(s); 
+    if (h < 0) {
+        printf("Error: h can not be negative\n");
+        exit(0);
+    }
+    attempt = &table[h];
+    while (*attempt) {
+        *pchandata = (*attempt)->pchandata;
+        if (strcmp( ca_name((*pchandata)->chid),s) == 0) return FOUND;
+            len++;
+            attempt = &((*attempt)->next);
+        }
 
-	*attempt = (item *) calloc(1,sizeof(item));
-	if (*attempt == NULL) {
-		 printf("Ezca: pv_search calloc failed on *attempt\n");
-		 exit(CA_ALLOC);
-		}
-	pchandata = (chandata *) AllocChandata();
-	(*attempt)->pchandata = pchandata;
-	succlen += len;
-	num++;
-	return NOTFOUND;
+    *attempt = (item *) calloc(1,sizeof(item));
+    if (*attempt == NULL) {
+         printf("Ezca: pv_search calloc failed on *attempt\n");
+         exit(CA_ALLOC);
+    }
+    *pchandata = (chandata *) AllocChandata();
+    (*attempt)->pchandata = *pchandata;
+    succlen += len;
+    num++;
+    return NOTFOUND;
 
 }
 
@@ -171,22 +174,28 @@ char *s;
 chandata * epicsShareAPI Ezca_check_hash_table(name)
 char *name;
 {
-int status=ECA_GETFAIL;
+   chandata *pchandata;
+   int status=ECA_GETFAIL;
 
-  switch (pv_search(name)) {
-	case FOUND: /*		printf("Already exists!\n");  */
-		break;
+    switch (pv_search(name, &pchandata)) {
+        case FOUND: /*        printf("Already exists!\n");  */
+            break;
 
-	case NOTFOUND:
+        case NOTFOUND:
 #ifdef EZCA 
-		status = ezcaPvToChid(name,&cid);
-		pchandata->chid = *cid;
+            status = ezcaPvToChid(name,&cid);
+            pchandata->chid = *cid;
 #else
- 		status = ca_search(name,&(pchandata->chid)); 
+             status = ca_search(name,&(pchandata->chid)); 
 #endif
-		if (status != ECA_NORMAL) pchandata->error = status;
-		break;
-		}
-return(pchandata);
+            if (status != ECA_NORMAL) pchandata->error = status;
+            else 
+            {
+                pchandata->mutexId = epicsMutexCreate();
+ 
+            }
+            break;
+    }
+    return(pchandata);
 }
 

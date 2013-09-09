@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <shareLib.h>
+#include <epicsMutex.h>
 
 #ifdef EZCA
 	#include <ezca.h>
@@ -65,6 +66,7 @@ typedef struct event_queue {
 	short overflow;
         char *scan_names;
         char **pscan;
+    
 	} EVENT_QUEUE;
 
 typedef struct chandata{
@@ -82,6 +84,7 @@ typedef struct chandata{
 	char string[MAX_STRING_SIZE]; 
 	TS_STAMP stamp;
 	EVENT_QUEUE *p_event_queue;
+    epicsMutexId mutexId;
         } chandata;
 
 epicsShareExtern struct caGlobals CA;
@@ -95,9 +98,9 @@ epicsShareFunc int epicsShareAPI Ezca_putArrayEvent(int noName,char **pvName,int
 
 
 epicsShareFunc void epicsShareAPI Ezca_sleep_time(double t);
-epicsShareFunc int epicsShareAPI Ezca_find_dev(char *name,chandata *pchandata);
+epicsShareFunc int epicsShareAPI Ezca_find_dev(char *name,chandata **pchandata);
 epicsShareFunc int epicsShareAPI Ezca_search_list(int noName,char **pvName,chandata *list);
-epicsShareFunc int epicsShareAPI Ezca_pvlist_search(int noName,char **pvName,chandata **list);
+epicsShareFunc int epicsShareAPI Ezca_pvlist_search(int noName,char **pvName,chandata **list, chandata ***chanlist);
 epicsShareFunc int epicsShareAPI Ezca_get_error_array(int noName,char **pvName,int *value);
 
 epicsShareFunc chandata * epicsShareAPI Ezca_check_hash_table(char *name);
