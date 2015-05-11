@@ -13,3 +13,13 @@ Mon Apr 12 16:44:50 CDT 2010
 
 Tue Aug 14 16:37:30 CDT 2012
 	Changed from tsDefs API to epicsTime API.
+
+Mon Sep 09 14:20:50 CDT 2013 author: hammonds;
+	LSCA-14 - Added in mutex locking on shared channel data.  
+	Changed so that Ezca_pvlist_search and Ezca_find_dev and 
+	EzcaHash no longer pass search info from the channel table 
+	through external/shared variables.  Each search method now 
+	returnsa pointer to the found channel info.  This seems to 
+	have reduced data collision errors greatly.  Reformatted c 
+	files to make them easier to read.
+
