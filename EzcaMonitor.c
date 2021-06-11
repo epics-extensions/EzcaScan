@@ -164,7 +164,6 @@ void Ezca_monitorValueChangeEvent(args)
 struct event_handler_args args;
 {
     chandata *pchandata;
-    double time;
 
     pchandata = (chandata *)args.usr;
 
@@ -185,7 +184,7 @@ struct event_handler_args args;
     pchandata->event = 1;
     pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
     if (CA.devprflag > 1) {
-        time = Ezca_iocClockTime(&pchandata->stamp);
+        Ezca_iocClockTime(&pchandata->stamp);
         fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
             ca_name(pchandata->chid),
             pchandata->value, pchandata->status,
@@ -209,7 +208,6 @@ void Ezca_monitorStringChangeEvent(args)
 struct event_handler_args args;
 {
     chandata *pchandata;
-    double time;
 
     pchandata = (chandata *)args.usr;
 
@@ -230,7 +228,7 @@ struct event_handler_args args;
     pchandata->event = 1;
     pchandata->stamp = ((struct dbr_time_string *)args.dbr)->stamp;
     if (CA.devprflag > 1) {
-        time = Ezca_iocClockTime(&pchandata->stamp);
+        Ezca_iocClockTime(&pchandata->stamp);
         fprintf(stderr,"NewString: name=%s, value=%s, stat=%d, sevr=%d, event=%d\n",
             ca_name(pchandata->chid),
             pchandata->string, pchandata->status,

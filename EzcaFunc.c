@@ -48,30 +48,7 @@ epicsShareDef struct caGlobals epicsShareFunc CA = {
 void epicsShareAPI Ezca_sleep_time(t)
 double t;    /* wait in seconds can be decimal*/
 {
-#ifdef BASE_3_14
     epicsThreadSleep(t);
-#else
-
-/* usleep isn't ANSI-C/POSIX
-*/
-unsigned u;
-#if defined(HP_UX)
-    sleep((unsigned int)t);
-#elif defined(VMS)
-    LIB$WAIT(t);
-#elif defined(SGI)
-    sleep((unsigned int)t);
-#elif defined(SOLARIS)
-    usleep((unsigned int)t);
-#elif defined(_WIN32)
-        u = 1000 * t;
-    Sleep(u);
-#else
-    u = 1000000 * t;
-    usleep(u);
-#endif
-
-#endif
 }
 
 
@@ -83,7 +60,7 @@ int epicsShareAPI Ezca_find_dev(name,pchandata)
 char *name;
 chandata **pchandata;
 {
-int status,command_error;
+int command_error;
 
 /* populate hash table here return the address */
 
@@ -98,7 +75,7 @@ int status,command_error;
 
     if ((*pchandata)->type != TYPENOTCONN) return (CA_SUCCESS);
 
-    status = ca_pend_io(CA.PEND_IO_TIME);
+    ca_pend_io(CA.PEND_IO_TIME);
 
     (*pchandata)->type = ca_field_type((*pchandata)->chid);
     (*pchandata)->state = ca_state((*pchandata)->chid);

@@ -63,7 +63,6 @@ void Ezca_queueValueChangeCallback(args)
 struct event_handler_args args;
 {
     chandata *pchandata;
-    double time;
 
     pchandata = (chandata *)args.usr;
 
@@ -85,7 +84,7 @@ struct event_handler_args args;
 
         pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
         if (CA.devprflag > 1) {
-            time = Ezca_iocClockTime(&pchandata->stamp);
+            Ezca_iocClockTime(&pchandata->stamp);
             fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
                 ca_name(pchandata->chid),
                 pchandata->value, pchandata->status,
@@ -118,7 +117,6 @@ struct event_handler_args args;
 {
     chandata *pchandata;
     int ne;
-    double time;
 
     pchandata = (chandata *)args.usr;
 
@@ -140,7 +138,7 @@ struct event_handler_args args;
 
         pchandata->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
         if (CA.devprflag > 1) {
-            time = Ezca_iocClockTime(&pchandata->stamp);
+            Ezca_iocClockTime(&pchandata->stamp);
             fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
                 ca_name(pchandata->chid),
                 pchandata->value, pchandata->status,
