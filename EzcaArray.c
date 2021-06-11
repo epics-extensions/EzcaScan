@@ -584,7 +584,6 @@ struct event_handler_args args;
     /* int    *pint; */
     short  *ps;
     long   *plong;
-    int count;
     chandata *pchandata;
     struct dbrtemp { chandata *pchan;
 	    int rtype;
@@ -593,7 +592,7 @@ struct event_handler_args args;
 
 	temparg = (struct dbrtemp *)args.usr;
 	pchandata = (chandata *)ca_puser(args.chid);
-	count = ca_element_count(pchandata->chid);
+	ca_element_count(pchandata->chid);
 
 #ifdef ACCESS_SECURITY
 	if (args.status == ECA_NORMAL) {

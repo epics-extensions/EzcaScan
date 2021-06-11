@@ -20,6 +20,7 @@
 
 #include <dbDefs.h>
 #include <cadef.h>
+#include <epicsThread.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -65,7 +66,6 @@ void Ezca_scanValueChangeCallback(struct event_handler_args args)
 {
     chandata *pchan;
     chandata *pchandata;
-    double time;
     int num,nonames,i;
 
     pchan = (chandata *)args.usr;
@@ -89,7 +89,7 @@ void Ezca_scanValueChangeCallback(struct event_handler_args args)
 
     pchan->stamp = ((struct dbr_time_double *)args.dbr)->stamp;
     if (CA.devprflag > 1) {
-        time = Ezca_iocClockTime(&pchan->stamp);
+        Ezca_iocClockTime(&pchan->stamp);
         fprintf(stderr,"New: name=%s, value=%f, stat=%d, sevr=%d, event=%d\n",
             ca_name(pchan->chid),
             pchan->value, pchan->status,
@@ -148,6 +148,7 @@ int epicsShareAPI Ezca_scanAdd(int npts,int nonames,char *pv,char **pvnames)
         }
         else return(1);   /* already monitored return 1 */
     }
+    return command_error;
 }
 
 /******************************************************
@@ -267,7 +268,7 @@ scan process
 ******************************************************/
 int epicsShareAPI Ezca_scanGetMonitor(char *pvName,double *vals)
 {
-    int i,command_error=0,num,ii=0;
+    int i,num,ii=0;
     evid temp_evid;
     chandata *pchan;
     chandata *pchandata;
@@ -289,7 +290,8 @@ int epicsShareAPI Ezca_scanGetMonitor(char *pvName,double *vals)
     temp_evid = pchan->evid;
     if (pchan->state != cs_conn) 
     {
-        command_error = CA_FAIL;
+        epicsMutexUnlock(pchan->mutexId);
+        return CA_FAIL;
     }
     else  if (temp_evid ) 
     {

@@ -99,7 +99,7 @@ static int TT[256] = {
 static int hash7(s)
 char *s;
 {
-    int i,len;
+    size_t i,len;
     int h,h0,h1;
     char *str;
 
